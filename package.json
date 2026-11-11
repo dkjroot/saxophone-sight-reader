@@ -1,0 +1,12 @@
+{
+  "name": "saxophone-sight-reader",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/core.test.js"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  },
+  "license": "GPL-3.0-only"
+}

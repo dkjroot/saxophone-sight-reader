@@ -1,0 +1,830 @@
+{
+  "version": 1,
+  "id": "meter-groups",
+  "title": "Study in meter and beat groups",
+  "provenance": {
+    "kind": "original",
+    "licence": "GPL-3.0-or-later"
+  },
+  "staves": [
+    {
+      "id": "upper",
+      "clef": "treble"
+    },
+    {
+      "id": "lower",
+      "clef": "bass"
+    }
+  ],
+  "voices": [
+    {
+      "id": "melody",
+      "staff": "upper",
+      "hand": "right",
+      "stem": "up"
+    },
+    {
+      "id": "bass",
+      "staff": "lower",
+      "hand": "left",
+      "stem": "down"
+    }
+  ],
+  "tempos": [
+    {
+      "at": [
+        0,
+        1
+      ],
+      "bpm": 120
+    }
+  ],
+  "measures": [
+    {
+      "id": "pickup",
+      "meter": [
+        6,
+        8
+      ],
+      "events": [
+        {
+          "id": "pickup-melody-0",
+          "voice": "melody",
+          "at": [
+            0,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "pickup-melody-0-note",
+              "letter": "C",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "pickup-bass-0",
+          "voice": "bass",
+          "at": [
+            0,
+            1
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "rest",
+          "notes": []
+        }
+      ],
+      "length": [
+        1,
+        2
+      ],
+      "pickup": true
+    },
+    {
+      "id": "compound",
+      "meter": [
+        6,
+        8
+      ],
+      "events": [
+        {
+          "id": "compound-melody-0",
+          "voice": "melody",
+          "at": [
+            0,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "compound-melody-0-note",
+              "letter": "C",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "compound-melody-1",
+          "voice": "melody",
+          "at": [
+            1,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "compound-melody-1-note",
+              "letter": "D",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "compound-melody-2",
+          "voice": "melody",
+          "at": [
+            2,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "compound-melody-2-note",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "compound-melody-3",
+          "voice": "melody",
+          "at": [
+            3,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "compound-melody-3-note",
+              "letter": "F",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "compound-melody-4",
+          "voice": "melody",
+          "at": [
+            4,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "compound-melody-4-note",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "compound-melody-5",
+          "voice": "melody",
+          "at": [
+            5,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "compound-melody-5-note",
+              "letter": "A",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "compound-bass-0",
+          "voice": "bass",
+          "at": [
+            0,
+            1
+          ],
+          "value": "q",
+          "dots": 1,
+          "kind": "rest",
+          "notes": []
+        },
+        {
+          "id": "compound-bass-1",
+          "voice": "bass",
+          "at": [
+            3,
+            2
+          ],
+          "value": "q",
+          "dots": 1,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "compound-bass-1-note",
+              "letter": "G",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "asym23",
+      "meter": [
+        5,
+        8
+      ],
+      "events": [
+        {
+          "id": "asym23-melody-0",
+          "voice": "melody",
+          "at": [
+            0,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym23-melody-0-note",
+              "letter": "C",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "asym23-melody-1",
+          "voice": "melody",
+          "at": [
+            1,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym23-melody-1-note",
+              "letter": "D",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "asym23-melody-2",
+          "voice": "melody",
+          "at": [
+            2,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym23-melody-2-note",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "asym23-melody-3",
+          "voice": "melody",
+          "at": [
+            3,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym23-melody-3-note",
+              "letter": "F",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "asym23-melody-4",
+          "voice": "melody",
+          "at": [
+            4,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym23-melody-4-note",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "asym23-bass-0",
+          "voice": "bass",
+          "at": [
+            0,
+            1
+          ],
+          "value": "q",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym23-bass-0-note",
+              "letter": "G",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "asym23-bass-1",
+          "voice": "bass",
+          "at": [
+            1,
+            1
+          ],
+          "value": "q",
+          "dots": 1,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym23-bass-1-note",
+              "letter": "G",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        }
+      ],
+      "beatGroups": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": "asym32",
+      "meter": [
+        5,
+        8
+      ],
+      "events": [
+        {
+          "id": "asym32-melody-0",
+          "voice": "melody",
+          "at": [
+            0,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym32-melody-0-note",
+              "letter": "C",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "asym32-melody-1",
+          "voice": "melody",
+          "at": [
+            1,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym32-melody-1-note",
+              "letter": "D",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "asym32-melody-2",
+          "voice": "melody",
+          "at": [
+            2,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym32-melody-2-note",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "asym32-melody-3",
+          "voice": "melody",
+          "at": [
+            3,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym32-melody-3-note",
+              "letter": "F",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "asym32-melody-4",
+          "voice": "melody",
+          "at": [
+            4,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym32-melody-4-note",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "asym32-bass-0",
+          "voice": "bass",
+          "at": [
+            0,
+            1
+          ],
+          "value": "q",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym32-bass-0-note",
+              "letter": "G",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "asym32-bass-1",
+          "voice": "bass",
+          "at": [
+            1,
+            1
+          ],
+          "value": "q",
+          "dots": 1,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "asym32-bass-1-note",
+              "letter": "G",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        }
+      ],
+      "beatGroups": [
+        3,
+        2
+      ]
+    },
+    {
+      "id": "partial",
+      "meter": [
+        3,
+        4
+      ],
+      "events": [
+        {
+          "id": "partial-melody-0",
+          "voice": "melody",
+          "at": [
+            0,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "partial-melody-0-note",
+              "letter": "C",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "partial-melody-1",
+          "voice": "melody",
+          "at": [
+            1,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "partial-melody-1-note",
+              "letter": "D",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "partial-melody-2",
+          "voice": "melody",
+          "at": [
+            2,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "partial-melody-2-note",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "partial-melody-3",
+          "voice": "melody",
+          "at": [
+            3,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "partial-melody-3-note",
+              "letter": "F",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "partial-bass-0",
+          "voice": "bass",
+          "at": [
+            0,
+            1
+          ],
+          "value": "q",
+          "dots": 0,
+          "kind": "rest",
+          "notes": []
+        },
+        {
+          "id": "partial-bass-1",
+          "voice": "bass",
+          "at": [
+            1,
+            1
+          ],
+          "value": "q",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "partial-bass-1-note",
+              "letter": "G",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        }
+      ],
+      "length": [
+        2,
+        1
+      ],
+      "pickup": false
+    },
+    {
+      "id": "simple",
+      "meter": [
+        3,
+        4
+      ],
+      "events": [
+        {
+          "id": "simple-melody-0",
+          "voice": "melody",
+          "at": [
+            0,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "simple-melody-0-note",
+              "letter": "C",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "simple-melody-1",
+          "voice": "melody",
+          "at": [
+            1,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "simple-melody-1-note",
+              "letter": "D",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "simple-melody-2",
+          "voice": "melody",
+          "at": [
+            2,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "simple-melody-2-note",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "simple-melody-3",
+          "voice": "melody",
+          "at": [
+            3,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "simple-melody-3-note",
+              "letter": "F",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "simple-melody-4",
+          "voice": "melody",
+          "at": [
+            4,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "simple-melody-4-note",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "simple-melody-5",
+          "voice": "melody",
+          "at": [
+            5,
+            2
+          ],
+          "value": "8",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "simple-melody-5-note",
+              "letter": "A",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "simple-bass-0",
+          "voice": "bass",
+          "at": [
+            0,
+            1
+          ],
+          "value": "q",
+          "dots": 0,
+          "kind": "rest",
+          "notes": []
+        },
+        {
+          "id": "simple-bass-1",
+          "voice": "bass",
+          "at": [
+            1,
+            1
+          ],
+          "value": "q",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "simple-bass-1-note",
+              "letter": "G",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "simple-bass-2",
+          "voice": "bass",
+          "at": [
+            2,
+            1
+          ],
+          "value": "q",
+          "dots": 0,
+          "kind": "note",
+          "notes": [
+            {
+              "id": "simple-bass-2-note",
+              "letter": "G",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        }
+      ],
+      "boundary": "final"
+    }
+  ]
+}

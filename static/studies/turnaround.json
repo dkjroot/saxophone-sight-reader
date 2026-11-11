@@ -1,0 +1,465 @@
+{
+  "version": 1,
+  "id": "turnaround",
+  "title": "Turnaround",
+  "staves": [
+    {
+      "id": "upper",
+      "clef": "treble"
+    }
+  ],
+  "voices": [
+    {
+      "id": "melody",
+      "staff": "upper"
+    }
+  ],
+  "tempos": [
+    {
+      "at": [
+        0,
+        1
+      ],
+      "bpm": 104
+    }
+  ],
+  "provenance": {
+    "kind": "original",
+    "style": "jazz"
+  },
+  "measures": [
+    {
+      "id": "bar-1",
+      "meter": [
+        4,
+        4
+      ],
+      "key": "C",
+      "boundary": "single",
+      "events": [
+        {
+          "id": "bar-1-event-1",
+          "voice": "melody",
+          "at": [
+            0,
+            1
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-1-event-1-note",
+              "letter": "D",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-1-event-2",
+          "voice": "melody",
+          "at": [
+            1,
+            2
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-1-event-2-note",
+              "letter": "F",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-1-event-3",
+          "voice": "melody",
+          "at": [
+            1,
+            1
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-1-event-3-note",
+              "letter": "A",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-1-event-4",
+          "voice": "melody",
+          "at": [
+            3,
+            2
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-1-event-4-note",
+              "letter": "C",
+              "octave": 5,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-1-event-5",
+          "voice": "melody",
+          "at": [
+            2,
+            1
+          ],
+          "value": "q",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-1-event-5-note",
+              "letter": "D",
+              "octave": 5,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-1-event-6",
+          "voice": "melody",
+          "at": [
+            3,
+            1
+          ],
+          "value": "q",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-1-event-6-note",
+              "letter": "C",
+              "octave": 5,
+              "accidental": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bar-2",
+      "meter": [
+        4,
+        4
+      ],
+      "key": "C",
+      "boundary": "single",
+      "events": [
+        {
+          "id": "bar-2-event-1",
+          "voice": "melody",
+          "at": [
+            0,
+            1
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-2-event-1-note",
+              "letter": "B",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-2-event-2",
+          "voice": "melody",
+          "at": [
+            1,
+            2
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-2-event-2-note",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-2-event-3",
+          "voice": "melody",
+          "at": [
+            1,
+            1
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-2-event-3-note",
+              "letter": "F",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-2-event-4",
+          "voice": "melody",
+          "at": [
+            3,
+            2
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-2-event-4-note",
+              "letter": "D",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-2-event-5",
+          "voice": "melody",
+          "at": [
+            2,
+            1
+          ],
+          "value": "q",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-2-event-5-note",
+              "letter": "F",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-2-event-6",
+          "voice": "melody",
+          "at": [
+            3,
+            1
+          ],
+          "value": "q",
+          "kind": "rest",
+          "notes": []
+        }
+      ]
+    },
+    {
+      "id": "bar-3",
+      "meter": [
+        4,
+        4
+      ],
+      "key": "C",
+      "boundary": "single",
+      "events": [
+        {
+          "id": "bar-3-event-1",
+          "voice": "melody",
+          "at": [
+            0,
+            1
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-3-event-1-note",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-3-event-2",
+          "voice": "melody",
+          "at": [
+            1,
+            2
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-3-event-2-note",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-3-event-3",
+          "voice": "melody",
+          "at": [
+            1,
+            1
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-3-event-3-note",
+              "letter": "B",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-3-event-4",
+          "voice": "melody",
+          "at": [
+            3,
+            2
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-3-event-4-note",
+              "letter": "C",
+              "octave": 5,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-3-event-5",
+          "voice": "melody",
+          "at": [
+            2,
+            1
+          ],
+          "value": "q",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-3-event-5-note",
+              "letter": "A",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-3-event-6",
+          "voice": "melody",
+          "at": [
+            3,
+            1
+          ],
+          "value": "q",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-3-event-6-note",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bar-4",
+      "meter": [
+        4,
+        4
+      ],
+      "key": "C",
+      "boundary": "final",
+      "events": [
+        {
+          "id": "bar-4-event-1",
+          "voice": "melody",
+          "at": [
+            0,
+            1
+          ],
+          "value": "q",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-4-event-1-note",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-4-event-2",
+          "voice": "melody",
+          "at": [
+            1,
+            1
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-4-event-2-note",
+              "letter": "D",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-4-event-3",
+          "voice": "melody",
+          "at": [
+            3,
+            2
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-4-event-3-note",
+              "letter": "B",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "bar-4-event-4",
+          "voice": "melody",
+          "at": [
+            2,
+            1
+          ],
+          "value": "h",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "bar-4-event-4-note",
+              "letter": "C",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

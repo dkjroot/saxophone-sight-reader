@@ -1,0 +1,51 @@
+{
+  "name": "VexFlow",
+  "version": "5.0.0",
+  "source_commit": "0ca6f889545c33cce851b420c24945f6eb685aeb",
+  "package_url": "https://registry.npmjs.org/vexflow/-/vexflow-5.0.0.tgz",
+  "package_integrity": "sha512-rjB7TV4ygKE5Fl3W5OlG+0dHv22CFufUJdMG6oNgvcn0zp34u+sOboZsadQXnF1O3tZ3myXThaUIaLkJlpNM2Q==",
+  "reviewed": "2026-10-16",
+  "fonts": [
+    {
+      "name": "@vexflow-fonts/bravura",
+      "version": "1.0.2",
+      "url": "https://registry.npmjs.org/@vexflow-fonts/bravura/-/bravura-1.0.2.tgz",
+      "integrity": "sha512-n3KC5hpv1CEoZCbMJ43WeUq71cIIycOUlWe2RU5OOIIKrQ9V8n0KV8v/oX/MDHokTXvUyTo4vJ2dsoMyMBeg4w==",
+      "gitHead": "c81178e44a5cd8dd84d25ea414e9654a8607b376"
+    },
+    {
+      "name": "@vexflow-fonts/academico",
+      "version": "1.0.1",
+      "url": "https://registry.npmjs.org/@vexflow-fonts/academico/-/academico-1.0.1.tgz",
+      "integrity": "sha512-Cy7oM8MQdQpBmylNfUCEEKh1RhjRGaokIKy0pu6DsdI+dSdqHreXUX66X7MDvJxgiQkSP2dOJG6TCETTclP1UQ==",
+      "gitHead": "1b9cbdfdfc7db1ad03f5479ca4f417a162e3ccea"
+    }
+  ],
+  "files": [
+    {
+      "file": "academico-OFL.txt",
+      "bytes": 4422,
+      "sha256": "da623fe9d67fd535caf746690c6678cda62ce23b44cf23453b2d71f3e6961720"
+    },
+    {
+      "file": "AUTHORS.md",
+      "bytes": 790,
+      "sha256": "13fd7d3378abd6dc3337105f00d8ea1cbb4a009c0e6d4452a1df38929fdaee18"
+    },
+    {
+      "file": "bravura-OFL.txt",
+      "bytes": 4420,
+      "sha256": "eaf7e8faffbe4e404fc19e625c89cef03992dc736051ae7e2fefe205cd6c93db"
+    },
+    {
+      "file": "LICENSE-MIT.txt",
+      "bytes": 1201,
+      "sha256": "5522a52057a68b081dd3e06a878584b565c6a3f7e7ddb154dd24f25b5630216f"
+    },
+    {
+      "file": "vexflow-bravura.js",
+      "bytes": 728171,
+      "sha256": "2d4451bf31c877cf289cf173452b77a6b08e362e3cdf75a1136e485eed3c0f89"
+    }
+  ]
+}

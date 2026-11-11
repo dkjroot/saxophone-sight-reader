@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saxophone Sight Reader</title>
+  <script>try { document.documentElement.dataset.theme = localStorage.getItem('saxophone-sight-reader-theme') === 'light' ? 'light' : 'dark'; } catch { /* Dark by default, even without storage. */ }</script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main>
+  <header class="score-banner"><div class="title-block"><div><h1>Saxophone Sight Reader</h1></div></div><div class="header-actions"><button id="theme-toggle" class="quiet" aria-pressed="true">Dark mode</button><button id="connect">Connect MIDI</button><a class="header-help" href="/help" target="_blank" rel="noopener noreferrer" aria-label="Help" title="Help and guide"><span class="help-label">Help</span><span class="help-icon" aria-hidden="true">?</span></a></div><nav class="practice-modes" aria-label="Practice view"><button id="mode-outline" class="quiet" aria-pressed="true">Pitch practice</button><button id="mode-study" class="quiet" aria-pressed="false">Passage study</button></nav></header>
+  <section class="connection" aria-label="MIDI connection">
+    <span id="midi-status" role="status">MIDI disconnected</span>
+    <label>Input <select id="inputs" disabled><option>No MIDI input connected</option></select></label>
+    <button id="reset" class="quiet">Clear input</button>
+    <span id="midi-activity" aria-label="Last MIDI note"></span>
+  </section>
+
+  <div id="playing-layout">
+  <section class="practice card" id="staff-panel" aria-label="Practice">
+    <div class="practice-top layout-toolbar"><button class="quiet layout-move" aria-label="Move staff" title="Drag to move staff; arrow keys move, Shift for larger steps">⠿</button><h2><span id="practice-title">Pitch drills</span> <span id="phrase-position"></span></h2><label id="study-bars-control" class="study-bars" hidden>Bars per line <select id="study-bars"><option value="auto">Automatic</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></label><div class="staff-scale"><label for="staff-scale">Scale</label><input id="staff-scale" type="range" min="40" max="160" step="5" value="100"><output id="staff-scale-value" for="staff-scale">100%</output></div><div class="practice-status"><span id="outline-count"><strong id="count">0</strong> <span id="count-label">repetitions completed</span></span><button id="pause-practice" class="quiet" aria-pressed="false" aria-label="Pause practice">Pause</button></div></div>
+    <p id="exercise-summary" class="exercise-summary" aria-label="Active exercise settings"></p>
+    <div id="staff" aria-label="Treble staff"></div>
+    <div id="study-transport" class="range-buttons" hidden><button id="study-start">Practise passage</button><button id="study-stop" class="quiet" title="Stop and return to passage start">Stop study</button><button id="study-rewind" class="quiet" title="Return to passage start; continue listening if playback is running">Rewind</button><button id="study-play" class="quiet">Play study</button><button id="study-audio-pause" class="quiet" disabled>Pause playback</button></div>
+    <div class="feedback"><h2 id="feedback" role="status" aria-live="polite"></h2><output id="note-names" hidden></output><p id="detail"></p></div>
+    <button class="quiet layout-resize" aria-label="Resize staff" title="Drag to resize staff; arrow keys resize, Shift for larger steps">↘</button>
+  </section>
+
+  <section class="card keyboard-card" id="keyboard-panel" aria-label="Pitch monitor">
+    <div class="keyboard-heading layout-toolbar"><button class="quiet layout-move" aria-label="Move pitch monitor" title="Drag to move pitch monitor; arrow keys move, Shift for larger steps">⠿</button><h2>Pitch monitor</h2><div class="keyboard-options"><label class="check keyboard-option"><input id="show-targets" type="checkbox"> Mark target</label></div></div>
+    <div class="pitch-readout"><span>Played</span><strong id="played-note">—</strong><span id="played-mark" aria-hidden="true"></span><span id="target-legend" hidden>◆ Target</span></div>
+    <div id="keyboard-scroll"><div id="keyboard" role="group" aria-label="Playable written pitches"></div></div>
+    <button class="quiet layout-resize" aria-label="Resize pitch monitor" title="Drag to resize pitch monitor; arrow keys resize, Shift for larger steps">↘</button>
+  </section>
+  </div>
+
+  <section class="settings-grid">
+        <div class="card settings" id="study-settings" hidden><h2>Passage study</h2>
+      <label>Source <select id="study-source"><option value="loaded" disabled>Loaded MIDI passage</option><option value="imported" disabled>Imported MusicXML</option><option value="after-hours" selected>After Hours · blues study</option><option value="turnaround">Turnaround · ii–V–I study</option></select></label>
+      <label>Import MusicXML <input id="study-file" type="file" accept=".musicxml,.xml"></label>
+      <p id="study-import-status" class="small" role="status"></p>
+      <label class="check"><input id="study-loop" type="checkbox" checked> Loop passage</label>
+      <label>Position <input id="study-position" type="range" min="0" max="0" value="0"></label>
+      <label>Speed <select id="study-speed"><option value="0.5">50%</option><option value="0.75">75%</option><option value="1" selected>100%</option><option value="1.5">150%</option><option value="2">200%</option></select></label>
+      <label>Tempo <select id="study-tempo"><option value="score">Score tempo</option><option value="steady">Steady tempo</option></select></label>
+      <input type="hidden" id="study-continuity" value="fingers">
+      <label>Entry beat <select id="study-entry"></select></label><label>Exit beat <select id="study-exit"></select></label>
+      <div id="study-filter-slot"></div>
+      <p id="study-source-status" class="small" role="status"></p>
+    </div>
+    <div class="card settings" id="outline-settings"><h2>Practice setup</h2>
+      <label>Source <select id="source"><option value="random">Pitch drills</option><option value="scale">Scale runs</option><option value="blues">Blues scale</option><option value="bebop">Dominant bebop scale</option><option value="ii-v-i">ii–V–I arpeggios</option><option id="source-midi" value="midi" disabled>MIDI melody</option></select></label>
+    <fieldset class="phrase-end"><legend>Mode</legend><label class="check"><input id="end-repeat" type="radio" name="end-action" value="repeat" checked> Repeat passage</label><label class="check"><input id="end-new" type="radio" name="end-action" value="new"> <span id="continuous-label">Continuous</span></label><label class="check"><input id="end-stop" type="radio" name="end-action" value="stop"> Stop at end</label></fieldset>
+    
+    <button id="restart-pitch" class="quiet" hidden>Restart passage</button>
+    <div class="practice-actions"><label class="check"><input id="reveal" type="checkbox"> Show note names</label></div>
+    <div id="outline-filter-slot"></div>
+
+      <label>Key <select id="key"><option value="C">C major / A minor</option></select></label>
+      <label>Scale <select id="tonality"><option value="major">Major</option><option value="minor">Natural minor</option></select></label>
+      <label>Largest leap <select id="leap"><option value="any">Unrestricted</option><option value="2">Whole tone</option><option value="5" selected>Fourth</option><option value="7">Fifth</option><option value="12">Octave</option></select></label>
+      <label>Phrase length <select id="length"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="6">6</option><option value="8" selected>8</option><option value="12">12</option><option value="16">16</option><option value="24">24</option><option value="32">32</option></select></label>
+      <label>Advancement <select id="progression"><option value="flow">Fluid</option><option value="release">Release each note</option></select></label>
+      <label>Scrolling <select id="scroll-mode"><option value="note">Note by note</option><option value="page">Page by page</option></select></label>
+      <label>Look-ahead <select id="preview"><option value="0">None</option><option value="1">1 upcoming</option><option value="2">2 upcoming</option><option value="3" selected>3 upcoming</option><option value="4">4 upcoming</option><option value="7">7 upcoming</option></select></label>
+      <label><span id="material-label">Pitch material</span> <select id="material"><option value="white">Notes in key</option><option value="sharps">Chromatic · prefer sharps</option><option value="flats">Chromatic · prefer flats</option></select></label>
+      <label>Reading register <select id="span"><option value="core">Core · D4–D5</option><option value="standard" selected>Standard sax · B♭3–F♯6</option><option value="full">Use full instrument range</option></select></label>
+    </div>
+    <div class="settings-stack">
+    <div class="card settings"><h2>Workspace</h2>
+      <label>Layout <select id="density"><option value="auto">Automatic</option><option value="720">720p</option><option value="1080">1080p</option><option value="1440">1440p</option><option value="2160">2160p</option><option value="custom">Custom</option></select></label>
+      <label>Pitch button size <select id="key-size"><option value="auto">Automatic</option><option value="46">Large</option><option value="38">Medium</option><option value="32">Small</option></select></label>
+    </div>
+    <div class="card settings"><h2>Instrument</h2>
+      <label>MIDI pitch mapping <select id="midi-offset"><option value="0">Written pitch · Aerophone in C</option><option value="-9">Concert pitch · E♭ alto</option><option value="-14">Concert pitch · B♭ tenor</option><option value="-2">Concert pitch · B♭ soprano</option><option value="-21">Concert pitch · E♭ baritone</option></select></label>
+      <button id="calibrate" class="quiet">Calibrate written C4</button>
+      <p class="small" id="mapping-status" role="status"></p>
+      <label>Lowest written note <output id="low-label"></output><input id="low" type="range" min="0" max="127" value="58"></label>
+      <label>Highest written note <output id="high-label"></output><input id="high" type="range" min="0" max="127" value="90"></label>
+      <div class="range-buttons"><button id="learn-low" class="quiet">Learn lowest note</button><button id="learn-high" class="quiet">Learn highest note</button></div>
+      <p id="range-status" class="small" role="status"></p>
+    </div>
+    <div class="card settings"><h2>Sound</h2>
+      <label class="check"><input id="live-sound" type="checkbox"> Sound my playing</label>
+      <label>Live instrument <select id="live-instrument"><option value="reed">Reed synth</option><option value="piano">Piano synth</option><option value="acoustic">Acoustic grand piano</option><option value="organ">Organ synth</option></select></label>
+      <label>Live volume <input id="live-volume" type="range" min="0" max="100" value="35"></label>
+      <label class="check"><input id="reference-sound" type="checkbox" checked> Target sound</label>
+      <label>Target instrument <select id="reference-instrument"><option value="reed">Reed synth</option><option value="piano">Piano synth</option><option value="acoustic">Acoustic grand piano</option><option value="organ">Organ synth</option></select></label>
+      <label>Target volume <input id="reference-volume" type="range" min="0" max="100" value="25"></label>
+      <div class="range-buttons"><button id="hear-target" class="quiet">Hear target</button><button id="hear-live" class="quiet">Hear live instrument</button><button id="sound-panic" class="quiet">Stop sound</button></div>
+      <p id="sound-status" class="small" role="status"></p>
+      <details class="sound-credits"><summary>Sound credits</summary><p class="small">Acoustic grand: Salamander Grand Piano V2 by Alexander Holm, <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>. <a href="/static/audio/salamander/NOTICES.md">Sample details</a>.</p></details>
+    </div>
+    <div class="card settings"><h2>Metronome</h2>
+      <label class="check"><input id="metronome" type="checkbox"> Metronome</label>
+      <label>Tempo <input id="tempo" type="number" min="30" max="240" value="80"></label>
+      <label>Beats per bar <select id="beats"><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="6">6</option></select></label>
+      <label>Click volume <input id="click-volume" type="range" min="0" max="100" value="20"></label>
+    </div>
+    </div>
+  </section>
+  {% include "_support.html" %}
+  <section class="card settings score-panel" aria-label="Music library and MIDI files"><div class="keyboard-heading"><h2>MIDI files &amp; library</h2><a class="help-link" href="/help" target="_blank" rel="noopener noreferrer">Help &amp; guide</a></div>
+    <label>Search <input id="library-search" type="search" maxlength="120" placeholder="Title, composer or style" disabled></label>
+    <div class="library-filters" role="group" aria-label="Filter music library">
+      <label>Composer <select id="library-composer" disabled><option value="">All</option></select></label>
+      <label>Era <select id="library-era" disabled><option value="">All</option></select></label>
+      <label>Style <select id="library-style" disabled><option value="">All</option></select></label>
+      <label>Difficulty <select id="library-difficulty" disabled><option value="">All</option></select></label>
+    </div>
+    <div class="library-choice"><label>Piece <select id="library-piece" disabled><option value="">Loading library…</option></select></label><button id="load-piece" disabled>Load piece</button><button id="random-piece" class="quiet" disabled>Random piece</button></div>
+    <p id="library-status" class="small" role="status"></p><p id="library-credit" class="small"></p><a id="library-source" class="small" hidden target="_blank" rel="noopener">Edition and licence</a>
+    <div class="library-choice"><label>Recent pieces <select id="recent-piece" disabled><option value="">No recent pieces</option></select></label><button id="clear-recent" class="quiet" disabled>Clear recent</button></div>
+    <p id="recent-status" class="small" role="status"></p>
+    <h3>Local MIDI file</h3>
+    <label>Choose MIDI file <input id="score-file" type="file" accept=".mid,.midi,audio/midi"></label>
+    <label>File pitch mapping <select id="file-offset"><option value="0">Use MIDI pitches as written</option><option value="-9">Concert pitch to E♭ alto</option><option value="-14">Concert pitch to B♭ tenor</option><option value="-2">Concert pitch to B♭ soprano</option><option value="-21">Concert pitch to E♭ baritone</option></select></label>
+    <p id="score-status" class="small" role="status"></p><p id="score-key-status" class="small" role="status"></p><p id="score-details" class="small"></p><p id="score-warnings" class="small" role="status"></p>
+    <div id="score-tracks" role="group" aria-label="MIDI tracks"></div>
+    <div class="range-buttons"><button id="export-score" class="quiet" disabled>Download MIDI data (JSON)</button></div>
+    <label>Suggested section <select id="suggested-passages" disabled><option value="">Choose a suggested section</option></select></label>
+    <label>First attack <input id="passage-start" type="number" min="1" max="1" value="1" disabled></label>
+    <label>Last attack <input id="passage-end" type="number" min="1" max="1" value="1" disabled></label>
+    <label>Passage name <input id="passage-name" type="text" maxlength="80" placeholder="Optional name"></label>
+    <div class="range-buttons"><button id="practice-score" disabled>Start practising this passage</button><button id="save-passage" class="quiet" disabled>Save passage</button><button id="delete-passage" class="quiet" disabled>Delete saved passage</button></div>
+    <label>Saved passages <select id="saved-passages" disabled><option value="">Choose a saved passage</option></select></label>
+    <p id="passage-status" class="small" role="status"></p>
+    <div id="source-preview-controls">
+    <div class="range-buttons"><button id="play-source" class="quiet" disabled>Play source passage</button><button id="pause-source" class="quiet" disabled>Pause</button><button id="stop-source" class="quiet" disabled>Stop playback</button></div>
+    <label class="check"><input id="source-clicks" type="checkbox"> Click with source playback</label>
+    <label>Source count-in <select id="source-countin"><option value="0">None</option><option value="1">1 bar</option><option value="2">2 bars</option></select></label>
+    <label>Playback speed <select id="source-speed"><option value="0.25">25%</option><option value="0.5">50%</option><option value="0.75">75%</option><option value="1" selected>100%</option><option value="1.25">125%</option><option value="1.5">150%</option><option value="2">200%</option></select></label>
+    <p id="source-playback-status" class="small" role="status"></p>
+    </div>
+    <p id="outline-status" class="small" role="status"></p><p id="score-playing" class="small" role="status"></p>
+  </section>
+  <section class="progress-panel" aria-label="Practice progress">
+    <div class="keyboard-heading"><h2>Progress</h2><div class="keyboard-options"><label class="check keyboard-option"><input id="save-history" type="checkbox"> Save history locally</label><button id="export-history" class="quiet">Export history</button><button id="import-history" class="quiet">Import history</button><input id="history-file" type="file" accept=".json,application/json" hidden><button id="clear-hour" class="quiet">Clear last hour</button><button id="clear-today" class="quiet">Clear today</button><button id="clear-history" class="quiet">Clear all</button></div></div>
+    <dl class="metrics-summary"><div><dt>Targets</dt><dd id="stats-count">0</dd></div><div><dt>Average response</dt><dd id="stats-mean">—</dd></div><div><dt>Median response</dt><dd id="stats-median">—</dd></div><div><dt>90% within</dt><dd id="stats-tail">—</dd></div><div><dt>First-attempt accuracy</dt><dd id="stats-accuracy">—</dd></div><div><dt>Best for this target</dt><dd id="stats-best">—</dd></div></dl>
+    <p id="history-status" class="small" role="status"></p><p id="history-import-status" class="small" role="status"></p>
+    <div id="progress-chart" aria-label="Daily median response times"></div>
+    <details><summary>Daily measurements (UTC)</summary><table class="analysis-table"><thead><tr><th>Date</th><th>Attempts</th><th>Median</th><th>First try</th></tr></thead><tbody id="daily-rows"></tbody></table></details>
+    <label class="analysis-choice">Breakdown <select id="analysis-dimension"><option value="key">Key</option><option value="note">Note</option><option value="position">Staff position</option><option value="accidental">Accidental</option></select></label>
+    <table class="analysis-table"><thead><tr><th>Group</th><th>Attempts</th><th>First try</th><th>Median</th></tr></thead><tbody id="analysis-rows"></tbody></table>
+    <h2 class="patterns-heading">Reading patterns</h2>
+    <p id="patterns-empty" class="small">Needs at least 8 comparable single-note attempts per note.</p>
+    <div class="table-scroll"><table id="patterns-table" class="analysis-table" hidden><thead><tr><th>Note</th><th>Staff</th><th>Exercise context</th><th>Attempts</th><th>Corrected targets</th><th>Median</th><th>Pattern</th></tr></thead><tbody id="pattern-rows"></tbody></table></div>
+  </section>
+</main>
+<script type="module" src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

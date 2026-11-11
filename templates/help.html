@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saxophone Sight Reader · Help</title>
+  <script>try { document.documentElement.dataset.theme = localStorage.getItem('saxophone-sight-reader-theme') === 'light' ? 'light' : 'dark'; } catch {}</script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="help-page">
+  <header><h1>Saxophone Sight Reader · Help</h1><div class="help-actions"><button id="help-theme" class="quiet">Light mode</button><button id="help-close" class="quiet" aria-label="Close help" title="Close help">×</button></div></header>
+  <nav aria-label="Help sections"><a href="#connect">Connect</a> · <a href="#pitch">Pitch practice</a> · <a href="#study">Passage study</a> · <a href="#files">MIDI files</a> · <a href="#sound">Sound and progress</a></nav>
+  <section id="connect"><h2>Connect your Aerophone</h2>
+    <p>Use the supplied USB Type‑A cable to connect the Aerophone GO (AE‑05), then click <strong>Connect MIDI</strong> in Chrome or Edge and allow access. Choose the Aerophone in <strong>Input</strong> and play a note to check the pitch monitor.</p>
+    <p>For Bluetooth on a Mac, open <strong>Audio MIDI Setup → Window → Show MIDI Studio → Configure Bluetooth</strong> and connect to the AE‑05 with the instrument’s power switch on the Bluetooth symbol and its blue light blinking. In the browser, click <strong>Refresh MIDI</strong> if the device list is already open. If another device or app is connected to the Aerophone over Bluetooth MIDI, disconnect it first. <a href="https://static.roland.com/assets/media/pdf/AE-05_eng01_W.pdf">Roland Aerophone GO manual</a> · <a href="https://support.apple.com/guide/audio-midi-setup/set-up-bluetooth-midi-devices-ams33f013765/mac">Apple’s Bluetooth MIDI instructions</a></p>
+    <p>With the Aerophone’s Transpose knob at C, start with <strong>Written pitch</strong>. If the played notes show the wrong pitch or octave, click <strong>Calibrate written C4</strong> and play the C just below the treble staff. You can also select a sounding-pitch preset under <strong>MIDI pitch mapping</strong>. Use <strong>Learn lowest note</strong> and <strong>Learn highest note</strong> if you want to set your range by playing it.</p>
+    <p>If MIDI stops responding, check the browser’s site permissions, reconnect your cable or Bluetooth MIDI port and click <strong>Refresh MIDI</strong>. <strong>Clear input</strong> clears a stuck note. You can also use the pitch buttons with a mouse, a tap, or Space or Enter while a button is focused.</p>
+  </section>
+  <section id="pitch"><h2>Pitch practice</h2>
+    <p>Read the marked note on the treble staff. The pitch monitor shows what you played, and a higher or lower arrow helps you find the target. <strong>Mark target</strong> adds a diamond to the corresponding pitch button. <strong>Show note names</strong> gives you another way to check the written notes.</p>
+    <p>Use <strong>Pitch drills</strong> to work on recognition or try a scale, blues scale, bebop scale or ii–V–I line. <strong>Reading register</strong> limits the exercise to your chosen part of the range. For an easier starting point, try the core register and a whole-tone leap limit in Pitch drills.</p>
+    <p><strong>Fluid</strong> progression accepts a new pitch as soon as you play it, including a slur. Articulate the same pitch again when it repeats. <strong>Release each note</strong> waits for the release before it moves the marker. Use <strong>Repeat passage</strong> for a fixed line, <strong>Continuous</strong> for more notes, or <strong>Stop at end</strong> for one pass. <strong>Scrolling</strong> and <strong>Look-ahead</strong> control how much you see as you play.</p>
+  </section>
+  <section id="study"><h2>Passage study</h2>
+    <p>Choose <strong>After Hours</strong>, <strong>Turnaround</strong> or a loaded passage. <strong>Play study</strong> lets you hear the line. <strong>Practise passage</strong> waits for your attacks and lets you correct short holds and missed notes. Use <strong>Speed</strong>, <strong>Entry beat</strong> and <strong>Exit beat</strong> to work on a small section.</p>
+    <p><strong>Import MusicXML</strong> opens a single-voice treble part with ordinary or dotted notes, rests and ties. Use an uncompressed score-partwise file up to 256 KB. The app uses its written pitches. Files with DTD declarations, tuplets, grace notes or repeat traversal are outside the supported subset.</p>
+  </section>
+  <section id="files"><h2>MIDI files and library</h2>
+    <p>Load a built-in sax tune or choose a local MIDI file. Try the <em>Swing Low, Sweet Chariot</em> refrain for a compact range, <em>Indiana</em> for dotted rhythms or <em>Blue Platform</em> for a twelve-bar blues. Choose the section you want, then click <strong>Start practising this passage</strong>. The library tunes already use written sax pitch. For your own MIDI file, choose a melody track and use <strong>File pitch mapping</strong> if the file is in concert pitch.</p>
+    <p>Pitch practice uses the file’s attacks. Passage study adds derived rhythm on a 1/32-note grid and skips overlaps to keep a single line. <strong>Play source passage</strong> plays the selected original tracks. <strong>Download MIDI data (JSON)</strong> exports the original inspection. To reopen a saved passage, load the same file or library piece and choose it in <strong>Saved passages</strong>.</p>
+    <p>To look for more classical piano editions that can be used as melody sources, run <code>python tools/discover_scores.py --composer ChopinFF --limit 8</code> with your project environment active. Open <code>score-shortlists/mutopia.md</code> for source and licence links. Download the MIDI file yourself, extract it if necessary, then use <strong>Choose MIDI file</strong>. Discovery only writes a shortlist.</p>
+  </section>
+  <section id="sound"><h2>Sound and progress</h2>
+    <p>Use the Aerophone’s own sound or turn on <strong>Sound my playing</strong> for a local synth. <strong>Hear target</strong> plays the current pitch, and <strong>Metronome</strong> provides a click. <strong>Stop sound</strong> stops playback and the click.</p>
+    <p>Pitch practice tracks response time and first-try accuracy. Turn on <strong>Save history locally</strong> to keep those measurements in this browser. Imported music stays in memory for the session.</p>
+  </section>
+  {% include "_support.html" %}
+</main>
+<script type="module" src="{{ url_for('static', filename='help.js') }}"></script>
+</body>
+</html>

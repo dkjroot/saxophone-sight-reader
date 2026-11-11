@@ -1,0 +1,532 @@
+{
+  "version": 1,
+  "id": "tempo-curves",
+  "title": "Study in gradual tempo",
+  "provenance": {
+    "kind": "original",
+    "licence": "GPL-3.0-or-later"
+  },
+  "staves": [
+    {
+      "id": "upper",
+      "clef": "treble"
+    },
+    {
+      "id": "lower",
+      "clef": "bass"
+    }
+  ],
+  "voices": [
+    {
+      "id": "melody",
+      "staff": "upper",
+      "hand": "right",
+      "stem": "up"
+    },
+    {
+      "id": "bass",
+      "staff": "lower",
+      "hand": "left",
+      "stem": "down"
+    }
+  ],
+  "tempos": [
+    {
+      "at": [
+        0,
+        1
+      ],
+      "bpm": 60,
+      "curve": "linear"
+    },
+    {
+      "at": [
+        4,
+        1
+      ],
+      "bpm": 120,
+      "curve": "linear"
+    },
+    {
+      "at": [
+        8,
+        1
+      ],
+      "bpm": 60
+    },
+    {
+      "at": [
+        12,
+        1
+      ],
+      "bpm": 90
+    }
+  ],
+  "measures": [
+    {
+      "id": "tempo-bar-0",
+      "meter": [
+        4,
+        4
+      ],
+      "events": [
+        {
+          "id": "t0-m0",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            0,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t0-m0-n",
+              "letter": "C",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t0-m1",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            1,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t0-m1-n",
+              "letter": "D",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t0-m2",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            2,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t0-m2-n",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t0-m3",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            3,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t0-m3-n",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t0-b0",
+          "voice": "bass",
+          "kind": "note",
+          "at": [
+            0,
+            1
+          ],
+          "value": "h",
+          "notes": [
+            {
+              "id": "t0-b0-n",
+              "letter": "C",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t0-b1",
+          "voice": "bass",
+          "kind": "note",
+          "at": [
+            2,
+            1
+          ],
+          "value": "h",
+          "notes": [
+            {
+              "id": "t0-b1-n",
+              "letter": "G",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        }
+      ],
+      "boundary": "single"
+    },
+    {
+      "id": "tempo-bar-1",
+      "meter": [
+        4,
+        4
+      ],
+      "events": [
+        {
+          "id": "t1-m0",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            0,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t1-m0-n",
+              "letter": "C",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t1-m1",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            1,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t1-m1-n",
+              "letter": "D",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t1-m2",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            2,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t1-m2-n",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t1-m3",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            3,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t1-m3-n",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t1-b0",
+          "voice": "bass",
+          "kind": "note",
+          "at": [
+            0,
+            1
+          ],
+          "value": "h",
+          "notes": [
+            {
+              "id": "t1-b0-n",
+              "letter": "C",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t1-b1",
+          "voice": "bass",
+          "kind": "note",
+          "at": [
+            2,
+            1
+          ],
+          "value": "h",
+          "notes": [
+            {
+              "id": "t1-b1-n",
+              "letter": "G",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        }
+      ],
+      "boundary": "single"
+    },
+    {
+      "id": "tempo-bar-2",
+      "meter": [
+        4,
+        4
+      ],
+      "events": [
+        {
+          "id": "t2-m0",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            0,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t2-m0-n",
+              "letter": "C",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t2-m1",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            1,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t2-m1-n",
+              "letter": "D",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t2-m2",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            2,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t2-m2-n",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t2-m3",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            3,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t2-m3-n",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t2-b0",
+          "voice": "bass",
+          "kind": "note",
+          "at": [
+            0,
+            1
+          ],
+          "value": "h",
+          "notes": [
+            {
+              "id": "t2-b0-n",
+              "letter": "C",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t2-b1",
+          "voice": "bass",
+          "kind": "rest",
+          "at": [
+            2,
+            1
+          ],
+          "value": "h",
+          "notes": []
+        }
+      ],
+      "boundary": "single"
+    },
+    {
+      "id": "tempo-bar-3",
+      "meter": [
+        4,
+        4
+      ],
+      "events": [
+        {
+          "id": "t3-m0",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            0,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t3-m0-n",
+              "letter": "C",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t3-m1",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            1,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t3-m1-n",
+              "letter": "D",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t3-m2",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            2,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t3-m2-n",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t3-m3",
+          "voice": "melody",
+          "kind": "note",
+          "at": [
+            3,
+            1
+          ],
+          "value": "q",
+          "notes": [
+            {
+              "id": "t3-m3-n",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t3-b0",
+          "voice": "bass",
+          "kind": "note",
+          "at": [
+            0,
+            1
+          ],
+          "value": "h",
+          "notes": [
+            {
+              "id": "t3-b0-n",
+              "letter": "C",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "t3-b1",
+          "voice": "bass",
+          "kind": "note",
+          "at": [
+            2,
+            1
+          ],
+          "value": "h",
+          "notes": [
+            {
+              "id": "t3-b1-n",
+              "letter": "G",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        }
+      ],
+      "boundary": "final"
+    }
+  ]
+}

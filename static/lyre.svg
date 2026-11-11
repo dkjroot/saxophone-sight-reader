@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 100" fill="none" stroke="#aa8852" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Original line ornament, drawn for this application; no external artwork. -->
+  <g stroke-width="1.2">
+    <path d="M25 15C14 5 11 21 22 23L24 53Q25 70 40 73Q55 70 56 53L58 23C69 21 66 5 55 15M24 25H56M25 29H55M29 20H51M28 67Q40 78 52 67M30 74H50M28 78H52M25 82H55"/>
+    <path d="M29 29L31 63M35 29L36 68M40 29V70M45 29L44 68M51 29L49 63" stroke-width=".65"/>
+    <path d="M21 80C5 69 3 48 10 32M59 80C75 69 77 48 70 32M12 62Q2 60 4 52Q12 54 12 62ZM10 50Q3 45 7 39Q14 44 10 50ZM18 74Q7 74 7 66Q16 66 18 74ZM68 62Q78 60 76 52Q68 54 68 62ZM70 50Q77 45 73 39Q66 44 70 50ZM62 74Q73 74 73 66Q64 66 62 74Z"/>
+    <path d="M16 89Q28 85 40 90Q52 85 64 89M35 93H45" stroke-width=".7"/>
+  </g>
+</svg>

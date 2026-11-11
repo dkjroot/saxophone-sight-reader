@@ -1,0 +1,412 @@
+{
+  "version": 1,
+  "id": "study-voices",
+  "title": "Study in independent voices",
+  "composer": "Piano Sight Reader contributors",
+  "provenance": {
+    "kind": "original",
+    "licence": "GPL-3.0-or-later"
+  },
+  "staves": [
+    {
+      "id": "upper",
+      "clef": "treble"
+    },
+    {
+      "id": "lower",
+      "clef": "bass"
+    }
+  ],
+  "voices": [
+    {
+      "id": "melody",
+      "staff": "upper",
+      "hand": "right",
+      "stem": "up"
+    },
+    {
+      "id": "inner",
+      "staff": "upper",
+      "hand": "right",
+      "stem": "down"
+    },
+    {
+      "id": "bass",
+      "staff": "lower",
+      "hand": "left",
+      "stem": "down"
+    }
+  ],
+  "measures": [
+    {
+      "id": "measure-1",
+      "meter": [
+        4,
+        4
+      ],
+      "key": "C",
+      "events": [
+        {
+          "id": "m1-melody-1",
+          "voice": "melody",
+          "at": [
+            0,
+            1
+          ],
+          "value": "q",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m1-melody-1-note",
+              "letter": "C",
+              "octave": 5,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "m1-melody-2",
+          "voice": "melody",
+          "at": [
+            1,
+            1
+          ],
+          "value": "q",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m1-melody-2-note",
+              "letter": "D",
+              "octave": 5,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "m1-melody-3",
+          "voice": "melody",
+          "at": [
+            2,
+            1
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m1-melody-3-note",
+              "letter": "E",
+              "octave": 5,
+              "accidental": 0
+            }
+          ],
+          "dots": 1
+        },
+        {
+          "id": "m1-melody-4",
+          "voice": "melody",
+          "at": [
+            11,
+            4
+          ],
+          "value": "16",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m1-melody-4-note",
+              "letter": "F",
+              "octave": 5,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "m1-triplet-1",
+          "voice": "melody",
+          "at": [
+            3,
+            1
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m1-triplet-1-note",
+              "letter": "G",
+              "octave": 5,
+              "accidental": 0
+            }
+          ],
+          "tuplet": {
+            "actual": 3,
+            "normal": 2,
+            "group": "triplet-a"
+          }
+        },
+        {
+          "id": "m1-triplet-2",
+          "voice": "melody",
+          "at": [
+            10,
+            3
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m1-triplet-2-note",
+              "letter": "A",
+              "octave": 5,
+              "accidental": 0
+            }
+          ],
+          "tuplet": {
+            "actual": 3,
+            "normal": 2,
+            "group": "triplet-a"
+          }
+        },
+        {
+          "id": "m1-triplet-3",
+          "voice": "melody",
+          "at": [
+            11,
+            3
+          ],
+          "value": "8",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m1-triplet-3-note",
+              "letter": "G",
+              "octave": 5,
+              "accidental": 0
+            }
+          ],
+          "tuplet": {
+            "actual": 3,
+            "normal": 2,
+            "group": "triplet-a"
+          }
+        },
+        {
+          "id": "m1-inner-1",
+          "voice": "inner",
+          "at": [
+            0,
+            1
+          ],
+          "value": "h",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m1-inner-1-note",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "m1-inner-2",
+          "voice": "inner",
+          "at": [
+            2,
+            1
+          ],
+          "value": "h",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m1-inner-2-note",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "m1-bass-1",
+          "voice": "bass",
+          "at": [
+            0,
+            1
+          ],
+          "value": "w",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m1-bass-1-note",
+              "letter": "C",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "measure-2",
+      "events": [
+        {
+          "id": "m2-melody-1",
+          "voice": "melody",
+          "at": [
+            0,
+            1
+          ],
+          "value": "q",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m2-melody-1-note",
+              "letter": "E",
+              "octave": 5,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "m2-melody-2",
+          "voice": "melody",
+          "at": [
+            1,
+            1
+          ],
+          "value": "q",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m2-melody-2-note",
+              "letter": "E",
+              "octave": 5,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "m2-melody-3",
+          "voice": "melody",
+          "at": [
+            2,
+            1
+          ],
+          "value": "q",
+          "kind": "rest",
+          "notes": []
+        },
+        {
+          "id": "m2-melody-4",
+          "voice": "melody",
+          "at": [
+            3,
+            1
+          ],
+          "value": "q",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m2-melody-4-note",
+              "letter": "C",
+              "octave": 5,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "m2-inner-1",
+          "voice": "inner",
+          "at": [
+            0,
+            1
+          ],
+          "value": "h",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m2-inner-1-note",
+              "letter": "G",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "m2-inner-2",
+          "voice": "inner",
+          "at": [
+            2,
+            1
+          ],
+          "value": "h",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m2-inner-2-note",
+              "letter": "E",
+              "octave": 4,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "m2-bass-1",
+          "voice": "bass",
+          "at": [
+            0,
+            1
+          ],
+          "value": "h",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m2-bass-1-note",
+              "letter": "F",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        },
+        {
+          "id": "m2-bass-2",
+          "voice": "bass",
+          "at": [
+            2,
+            1
+          ],
+          "value": "h",
+          "kind": "note",
+          "notes": [
+            {
+              "id": "m2-bass-2-note",
+              "letter": "G",
+              "octave": 3,
+              "accidental": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ties": [
+    {
+      "from": "m1-inner-2-note",
+      "to": "m2-inner-1-note"
+    }
+  ],
+  "tempos": [
+    {
+      "at": [
+        0,
+        1
+      ],
+      "bpm": 84
+    },
+    {
+      "at": [
+        4,
+        1
+      ],
+      "bpm": 96
+    }
+  ]
+}
