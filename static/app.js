@@ -2,6 +2,7 @@ import {LayoutEditor} from './layout_editor.js';
 import {MidiPassageStream} from './midi_stream.js';
 import {GeneratedStream} from './generated_stream.js';
 import {FlowGate} from './flow.js';
+import {AerophoneFingeringChart} from './fingering.js';
 import {KEYS, keyAlterations, spell, noteName, staffStep, match} from './core.js';
 import {WindPerformance, makeSaxPhrase, describeSaxExercise, writtenPitch, soundingPitch, saxNote} from './saxophone.js';
 import {readingWindow} from './notation.js';
@@ -148,6 +149,113 @@ $('show-targets').addEventListener('change', () => {
   try { localStorage.setItem('saxophone-sight-reader-show-targets', String(show)); } catch { /* Session still works. */ }
 });
 
+const fingeringChart = new AerophoneFingeringChart({
+  svgContainer: $('fingering-diagram'),
+  noteLabel: $('fingering-note-name'),
+  keysLabel: $('fingering-keys-text'),
+  variantBar: $('fingering-variants'),
+});
+const fingeringStorageKey = 'saxophone-sight-reader-show-fingering';
+function syncFingeringPanel() {
+  const show = $('show-fingering').checked;
+  $('fingering-panel').hidden = !show;
+  if (!show) return;
+  const active = workspace === 'study' ? authored?.target ?? [] : target;
+  fingeringChart.setNote(active[0] ?? null, {showName: $('reveal').checked});
+}
+function applyFingeringVisibility(show) {
+  $('show-fingering').checked = show;
+  syncFingeringPanel();
+}
+try { applyFingeringVisibility(localStorage.getItem(fingeringStorageKey) === 'true'); } catch { applyFingeringVisibility(false); }
+$('show-fingering').addEventListener('change', () => {
+  const show = $('show-fingering').checked;
+  applyFingeringVisibility(show);
+  try { localStorage.setItem(fingeringStorageKey, String(show)); } catch { /* Session still works. */ }
+  fitPlayingArea();
+});
+$('close-fingering').addEventListener('click', () => {
+  applyFingeringVisibility(false);
+  try { localStorage.setItem(fingeringStorageKey, 'false'); } catch { /* Session still works. */ }
+  fitPlayingArea();
+});
+
+function positionPill(container, pill, activeButton) {
+  if (!container || !pill || !activeButton || activeButton.hidden) return;
+  const left = activeButton.offsetLeft;
+  const width = activeButton.offsetWidth;
+  if (!width) return;
+  container.dataset.pillReady = 'true';
+  pill.style.width = `${width}px`;
+  pill.style.transform = `translate3d(${left}px, 0, 0)`;
+}
+function positionModePill() {
+  positionPill(document.querySelector('.practice-modes'), $('mode-pill'), $(workspace === 'study' ? 'mode-study' : 'mode-outline'));
+}
+let activeStudioTab = 'practice';
+const studioTabs = [...document.querySelectorAll('#studio-tabs [role="tab"]')];
+const studioPanels = [...document.querySelectorAll('.studio-panel[role="tabpanel"]')];
+function positionStudioPill() {
+  positionPill($('studio-tabs'), $('studio-tab-pill'), studioTabs.find(tab => tab.dataset.tab === activeStudioTab));
+}
+function switchStudioTab(tabId, focusTab = false) {
+  const targetTab = studioTabs.find(tab => tab.dataset.tab === tabId && !tab.hidden);
+  if (!targetTab) return;
+  activeStudioTab = tabId;
+  for (const tab of studioTabs) {
+    const active = tab === targetTab;
+    tab.setAttribute('aria-selected', String(active));
+    tab.tabIndex = active ? 0 : -1;
+  }
+  for (const panel of studioPanels) panel.hidden = panel.dataset.panel !== tabId;
+  positionStudioPill();
+  if (focusTab) targetTab.focus();
+}
+for (const tab of studioTabs) {
+  tab.addEventListener('click', () => switchStudioTab(tab.dataset.tab));
+  tab.addEventListener('keydown', event => {
+    const visible = studioTabs.filter(item => !item.hidden);
+    const index = visible.indexOf(tab);
+    let nextIndex = -1;
+    if (event.key === 'ArrowRight') nextIndex = (index + 1) % visible.length;
+    else if (event.key === 'ArrowLeft') nextIndex = (index - 1 + visible.length) % visible.length;
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = visible.length - 1;
+    if (nextIndex < 0) return;
+    event.preventDefault();
+    switchStudioTab(visible[nextIndex].dataset.tab, true);
+  });
+}
+
+function syncQuickBar() {
+  $('quick-hear').disabled = !$('reference-sound').checked;
+  const metronomeOn = $('metronome').checked;
+  $('quick-metronome').setAttribute('aria-pressed', String(metronomeOn));
+  $('quick-metronome').textContent = metronomeOn ? `Metronome · ${$('tempo').value}` : 'Metronome';
+  $('quick-reveal').setAttribute('aria-pressed', String($('reveal').checked));
+}
+$('quick-hear').addEventListener('click', () => $('hear-target').click());
+$('quick-metronome').addEventListener('click', () => {
+  $('metronome').checked = !$('metronome').checked;
+  $('metronome').dispatchEvent(new Event('change'));
+  syncQuickBar();
+});
+$('quick-reveal').addEventListener('click', () => {
+  $('reveal').checked = !$('reveal').checked;
+  $('reveal').dispatchEvent(new Event('change'));
+});
+$('quick-panic').addEventListener('click', () => {
+  $('sound-panic').click();
+  syncQuickBar();
+});
+for (const id of ['metronome', 'tempo', 'reference-sound']) $(id).addEventListener('change', syncQuickBar);
+$('sound-panic').addEventListener('click', syncQuickBar);
+
+function setStageProgress(ratio) {
+  const clamped = Math.max(0, Math.min(1, Number(ratio) || 0));
+  $('stage-progress-fill').style.setProperty('--phrase-progress', clamped.toFixed(4));
+}
+
 function drawStaff() {
   if(workspace==='study') {authored?.draw(); fitPlayingArea(); return;}
   const current = settings();
@@ -176,6 +284,11 @@ function drawStaff() {
   for (let index = 0; index < Math.abs(fifths); index++) {
     svg += `<text class="key-signature" x="${70 + index * 14}" y="${bottom - (signatureSteps[index] - 30) * 5 + 6}">${fifths > 0 ? '♯' : '♭'}</text>`;
   }
+  const activeLocal = !passageEnded ? indices.indexOf(phraseIndex) : -1;
+  if (activeLocal >= 0) {
+    const activeX = firstX + activeLocal * stride;
+    svg += `<rect class="target-beam" x="${activeX - 16}" y="${top - 8}" width="32" height="${bottom - top + 16}" rx="8"/>`;
+  }
   const alterations = keyAlterations(current.key);
   notes.forEach((note, local) => {
     const index = indices[local], x = firstX + local * stride, y = bottom - (steps[local] - 30) * 5;
@@ -192,13 +305,14 @@ function drawStaff() {
     const data = `data-step="${index}" data-midi="${note.midi}"`;
     const accidental = {'-2':'𝄫','-1':'♭',0:'♮',1:'♯',2:'𝄪'}[note.accidental];
     if (note.accidental !== alterations[note.letter]) svg += `<text ${data} class="accidental" x="${x - 14}" y="${y + 7}" text-anchor="end">${accidental}</text>`;
-    svg += `<ellipse ${data} class="note" cx="${x}" cy="${y}" rx="7.5" ry="4.5" transform="rotate(-16 ${x} ${y})"/>`;
+    svg += `<ellipse ${data} class="note${index === phraseIndex && !passageEnded ? ' is-current' : ''}" cx="${x}" cy="${y}" rx="7.5" ry="4.5" transform="rotate(-16 ${x} ${y})"/>`;
     svg += `<text data-step="${index}" data-target="${note.midi}" class="note-direction" x="${x + 20}" y="${y + 5}" aria-hidden="true"></text>`;
     svg += `<text data-step="${index}" data-target="${note.midi}" class="note-check" x="${x + 20}" y="${y + 5}" aria-hidden="true"></text>`;
   });
   $('staff').innerHTML = svg + '</svg>';
   $('phrase-position').textContent = !phrase.length ? '—' : settings().endAction === 'new' ? String(streamOffset+phraseIndex+1) : `${phraseIndex+1} / ${phrase.length}`;
   $('note-names').textContent = target.map(noteName).join(' · ');
+  setStageProgress(passageEnded ? 1 : !phrase.length ? 0 : settings().endAction === 'new' ? ((streamOffset + phraseIndex) % 16) / 16 : phraseIndex / phrase.length);
   fitPlayingArea();
 }
 
@@ -230,6 +344,7 @@ function drawKeyboard() {
     key.type = 'button';
     key.className = 'key pitch-key';
     key.dataset.pitch = pitch;
+    if ([1, 3, 6, 8, 10].includes(((pitch % 12) + 12) % 12)) key.dataset.accidental = 'true';
     key.setAttribute('aria-label', `Play ${noteName(note)}`);
     const label = document.createElement('span');
     label.textContent = noteName(note);
@@ -369,13 +484,23 @@ $('pause-practice').addEventListener('click',()=>{
 });
 function update() {
   sound.sync();
-  if(workspace==='study') {const result=authored?.update(); paintKeys(result?.hints??[],result?.target??[]); $('note-names').textContent=(result?.target??[]).map(noteName).join(' · '); return;}
+  syncQuickBar();
+  if(workspace==='study') {
+    const result=authored?.update();
+    paintKeys(result?.hints??[],result?.target??[]);
+    $('note-names').textContent=(result?.target??[]).map(noteName).join(' · ');
+    const totalMoments = authored?.score?.moments?.length ?? 0;
+    setStageProgress(totalMoments > 1 ? (authored?.index ?? 0) / (totalMoments - 1) : 0);
+    syncFingeringPanel();
+    return;
+  }
   const held = performance.held, flow=$('progression').value==='flow';
   const result = flow ? flowGate.evaluate(held,performance.attacks) : match(target, held);
   const accepted=flow ? result.accepted : held;
   const hints = solved || waitingForRelease ? [] : result.hints;
   const directions = new Map(hints.map(hint => [hint.target, hint.direction]));
   paintKeys(hints);
+  syncFingeringPanel();
   for (const head of $('staff').querySelectorAll('[data-midi]')) head.classList.toggle('hit', +head.dataset.step === phraseIndex && accepted.has(+head.dataset.midi));
   for (const check of $('staff').querySelectorAll('.note-check')) check.textContent = +check.dataset.step === phraseIndex && accepted.has(+check.dataset.target) ? '✓' : '';
   for (const hint of $('staff').querySelectorAll('.note-direction')) hint.textContent = +hint.dataset.step === phraseIndex && directions.has(+hint.dataset.target) ? (directions.get(+hint.dataset.target) === 'up' ? '↑' : '↓') : '';
@@ -452,7 +577,7 @@ for (const id of controls) $(id).addEventListener('change', () => {
 });
 for (const id of ['low', 'high']) $(id).addEventListener('input', rangeLabels);
 for (const input of document.querySelectorAll('[name="end-action"]')) input.addEventListener('change', () => {persist(); syncMode(); completed=0; $('count').textContent='0'; newTarget();});
-$('reveal').addEventListener('change', () => { $('note-names').hidden = !$('reveal').checked; });
+$('reveal').addEventListener('change', () => { $('note-names').hidden = !$('reveal').checked; syncQuickBar(); syncFingeringPanel(); });
 $('reset').addEventListener('click', () => { performance.clear(); update(); });
 for (const [button, mode, prompt] of [
   ['learn-low', 'low', 'Play your lowest note.'],
@@ -468,6 +593,14 @@ for (const [button, mode, prompt] of [
     else progress.resume('learning');
   });
 }
+let midiPulseTimer = null;
+function pulseMidiIndicator() {
+  const connection = document.querySelector('.connection');
+  if (!connection) return;
+  connection.classList.add('is-pulse');
+  clearTimeout(midiPulseTimer);
+  midiPulseTimer = setTimeout(() => connection.classList.remove('is-pulse'), 140);
+}
 function onMidi(event, inputId) {
   const offset = +$('midi-offset').value;
   if (document.hidden || !document.hasFocus()) {
@@ -480,6 +613,7 @@ function onMidi(event, inputId) {
   if (kind === 0x90 && velocity > 0) {
     const written = writtenPitch(note, offset);
     $('midi-activity').textContent = `MIDI ${note} · channel ${(status & 15) + 1}`;
+    pulseMidiIndicator();
     if (learning) {
       const mode = learning;
       learning = null;
@@ -511,6 +645,7 @@ async function selectInput(id, reopen = false) {
   if (previous) previous.onmidimessage = null;
   // Assign before opening: native open/close operations emit statechange events.
   selectedInput = input;
+  document.querySelector('.connection')?.classList.toggle('is-connected', false);
   performance.clear(); sound.engine?.live.stop();
   $('midi-activity').textContent = '';
   $('midi-status').textContent = input ? `Opening · ${input.name || 'MIDI instrument'}…` : 'No MIDI input connected.';
@@ -523,11 +658,13 @@ async function selectInput(id, reopen = false) {
     input.onmidimessage = event => {
       if (revision === inputRevision && selectedInput === input) onMidi(event, input.id);
     };
+    document.querySelector('.connection')?.classList.toggle('is-connected', true);
     $('midi-status').textContent = `Connected · ${input.name || 'MIDI instrument'}`;
     progress.resume('midi'); fitPlayingArea();
   } catch (error) {
     if (revision !== inputRevision) return;
     if (input) input.onmidimessage = null;
+    document.querySelector('.connection')?.classList.toggle('is-connected', false);
     $('midi-status').textContent = `MIDI input could not open (${error.name}). Close other MIDI tabs/apps, then click Refresh MIDI.`;
   }
 }
@@ -565,8 +702,9 @@ function backgroundPractice() {
 window.addEventListener('blur', backgroundPractice);
 window.addEventListener('focus', () => {progress.resume(); update();});
 document.addEventListener('visibilitychange', () => {if (document.hidden) backgroundPractice(); else if (document.hasFocus()) {progress.resume(); update();}});
-window.addEventListener('resize', () => {applyDensity(); fitKeyboard(); drawStaff(); scrollToCurrent(); update();});
-rangeLabels(); drawKeyboard(); newTarget();
+window.addEventListener('resize', () => {applyDensity(); fitKeyboard(); drawStaff(); scrollToCurrent(); update(); positionModePill(); positionStudioPill();});
+rangeLabels(); drawKeyboard(); newTarget(); syncQuickBar();
+requestAnimationFrame(() => { positionModePill(); positionStudioPill(); });
 
 layoutEditor=new LayoutEditor({workspace:$('playing-layout'),panels:{staff:$('staff-panel'),keyboard:$('keyboard-panel')},selection:$('density'),scaleInput:$('staff-scale'),onChange:()=>{
   applyDensity();fitKeyboard();drawStaff();scrollToCurrent();
@@ -606,9 +744,13 @@ async function switchWorkspace(mode) {
   document.documentElement.dataset.workspace=mode;
   $('mode-outline').setAttribute('aria-pressed',String(mode==='outline')); $('mode-study').setAttribute('aria-pressed',String(mode==='study'));
   $('outline-settings').hidden=mode!=='outline'; $('study-settings').hidden=mode!=='study'; $('outline-count').hidden=mode!=='outline';
+  $('restart-pitch').hidden=mode!=='outline' || !passageEnded;
   $('study-transport').hidden=mode!=='study'; $('study-bars-control').hidden=mode!=='study';
   syncSettingsTree();
   document.querySelector('.progress-panel').hidden=mode!=='outline';
+  $('tab-progress').hidden=mode!=='outline';
+  if(mode!=='outline' && activeStudioTab==='progress') switchStudioTab('practice');
+  positionModePill(); positionStudioPill();
   $('staff').scrollTop=0; $('staff').scrollLeft=0;
   if(mode==='study') {
     progress.pause('workspace'); authored.enter();

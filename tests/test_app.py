@@ -8,7 +8,7 @@ class ServerTests(unittest.TestCase):
             page = client.get('/')
             self.assertEqual(page.status_code, 200)
             self.assertIn(b'Connect MIDI', page.data)
-            for asset in ('app.js', 'score_practice.js', 'score_workspace.js', 'midi_study.js', 'studies/notation-cases.json', 'score_transport.js',  'engraving.js',  'score_model.js', 'studies/independent-voices.json', 'exercise.js', 'help.js', 'library.js', 'core.js', 'notation.js', 'harmony.js', 'generation.js', 'generation_worker.js', 'generated_stream.js', 'metrics.js', 'progress.js', 'audio.js', 'sound.js', 'score.js', 'outline.js', 'layout.js', 'layout_editor.js', 'transport.js', 'playback.js', 'passages.js', 'keyboard.js', 'flow.js', 'sections.js', 'samples.js', 'beats.js', 'style.css', 'lyre.svg', 'assets/score-banner-v1.png'):
+            for asset in ('app.js', 'fingering.js', 'score_practice.js', 'score_workspace.js', 'midi_study.js', 'studies/notation-cases.json', 'score_transport.js',  'engraving.js',  'score_model.js', 'studies/independent-voices.json', 'exercise.js', 'help.js', 'library.js', 'core.js', 'notation.js', 'harmony.js', 'generation.js', 'generation_worker.js', 'generated_stream.js', 'metrics.js', 'progress.js', 'audio.js', 'sound.js', 'score.js', 'outline.js', 'layout.js', 'layout_editor.js', 'transport.js', 'playback.js', 'passages.js', 'keyboard.js', 'flow.js', 'sections.js', 'samples.js', 'beats.js', 'style.css', 'lyre.svg', 'assets/score-banner-v1.png'):
                 with client.get('/static/' + asset) as response:
                     self.assertEqual(response.status_code, 200)
             help_page = client.get('/help')

@@ -19,10 +19,24 @@ module.exports = async function pitchChecks(browser, midiPage) {
     assert.equal(await page.locator('.note').nth(1).getAttribute('data-midi'), '63');
     assert.equal(await page.locator('.accidental').first().textContent(), '♭');
     assert.equal(await page.locator('#show-targets').isChecked(), false);
+    assert.equal(await page.locator('#show-fingering').isChecked(), false);
+    assert.equal(await page.locator('#fingering-panel').isVisible(), false);
     await page.locator('#show-targets').check();
     const marker = await pad(60).evaluate(node => getComputedStyle(node,'::after').content);
     assert.match(marker, /◆/);
+
+    await page.locator('#show-fingering').check();
+    assert.equal(await page.locator('#fingering-panel').isVisible(), true);
+    assert.equal(await page.locator('#fingering-note-name').innerText(), 'Target note');
+    assert.equal(await page.locator('[data-ae-key="low-c"].is-active').count(), 1);
+    await page.locator('#quick-reveal').click();
+    assert.equal(await page.locator('#reveal').isChecked(), true);
+    assert.equal(await page.locator('#fingering-note-name').innerText(), 'C4');
+    await page.locator('#quick-reveal').click();
+    assert.equal(await page.locator('#reveal').isChecked(), false);
+
     const staffY = await page.locator('#keyboard-panel').evaluate(node => node.getBoundingClientRect().top + window.scrollY);
+    await page.locator('#tab-instrument').click();
     await page.selectOption('#midi-offset','-9');
     await connect();
     await noteOn(50);
@@ -36,17 +50,21 @@ module.exports = async function pitchChecks(browser, midiPage) {
     assert.equal(await position(), '2 / 8');
     assert.equal(await pad(60).getAttribute('aria-pressed'), 'true');
     assert.equal(await page.locator('#played-mark').textContent(), '✓');
+    assert.equal(await page.locator('[data-ae-key="low-eb"].is-active').count(), 1);
     await noteOn(54);
     await noteOff(51);
     assert.equal(await position(), '3 / 8', 'note-on before previous release advances through a slur');
     assert.equal(await page.locator('#keyboard [aria-pressed=true]').count(), 1);
     assert.equal(await page.locator('#keyboard-panel').evaluate(node => node.getBoundingClientRect().top + window.scrollY), staffY);
     await noteOff(54);
+
+    await page.locator('#tab-practice').click();
     await page.selectOption('#preview','7');
     await page.selectOption('#scroll-mode','page');
     assert.equal(await position(), '3 / 8');
     assert.ok(await page.locator('.note[data-step="2"]').count());
 
+    await page.locator('#tab-instrument').click();
     await page.locator('#calibrate').click();
     await noteOn(48);
     assert.equal(await page.locator('#midi-offset').inputValue(), '-12');
@@ -59,7 +77,9 @@ module.exports = async function pitchChecks(browser, midiPage) {
     await noteOff(47);
 
     await set({source:'random',length:2,low:60,high:60});
+    await page.locator('#tab-practice').click();
     await page.locator('#end-stop').check();
+    await page.locator('#tab-progress').click();
     await page.locator('#save-history').check();
     await noteOn(48);
     assert.equal(await position(), '2 / 2');
@@ -73,6 +93,7 @@ module.exports = async function pitchChecks(browser, midiPage) {
     await page.locator('#restart-pitch').click();
     assert.equal(await current(), '60');
 
+    await page.locator('#tab-practice').click();
     await page.selectOption('#progression','release');
     await noteOn(48);
     assert.equal(await page.locator('#feedback').innerText(), '✓ Release the note');
@@ -89,12 +110,40 @@ module.exports = async function pitchChecks(browser, midiPage) {
 
     await page.selectOption('#progression','flow');
     await page.locator('#end-new').check();
-    await page.evaluate(() => {
-      for (let i=0; i<45; i++) {window.testMidi.send([0x90,48,90]); window.testMidi.send([0x80,48,0]);}
+    const latency = await page.evaluate(async () => {
+      const start = performance.now();
+      for (let i = 0; i < 45; i++) { window.testMidi.send([0x90, 48, 90]); window.testMidi.send([0x80, 48, 0]); }
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      return performance.now() - start;
     });
+    assert.ok(latency < 500, `Expected rapid MIDI batch + paint under 500ms, got ${latency.toFixed(2)}ms`);
     await page.waitForFunction(() => +document.getElementById('phrase-position').textContent >= 33);
     for (let i=0; i<13 && +(await position()) < 46; i++) {await noteOn(48); await noteOff(48);}
     assert.equal(await page.locator('#count').innerText(),'45');
+
+    // Verify Studio Dock keyboard tab switching & stage quick pill sync.
+    await page.locator('#tab-practice').focus();
+    await page.keyboard.press('ArrowRight');
+    assert.equal(await page.locator('#tab-instrument').getAttribute('aria-selected'), 'true');
+    assert.equal(await page.locator('#panel-instrument').isVisible(), true);
+    await page.keyboard.press('End');
+    assert.equal(await page.locator('#tab-progress').getAttribute('aria-selected'), 'true');
+    await page.keyboard.press('Home');
+    assert.equal(await page.locator('#tab-practice').getAttribute('aria-selected'), 'true');
+    await page.locator('#quick-metronome').click();
+    assert.equal(await page.locator('#metronome').isChecked(), true);
+    await page.locator('#quick-panic').click();
+    assert.equal(await page.locator('#metronome').isChecked(), false);
+
+    // Verify B♭4 Side B♭ -> Bis alternate fingering without shifting keyboard-panel Y.
+    await set({source:'random', material:'flats', length:2, low:70, high:70});
+    assert.equal(await page.locator('[data-ae-key="lh1"].is-active').count(), 1);
+    assert.equal(await page.locator('[data-ae-key="lh2"].is-active').count(), 1);
+    assert.equal(await page.locator('[data-ae-key="ta"].is-active').count(), 1);
+    await page.locator('.variant-pill', {hasText: 'Bis'}).click();
+    assert.equal(await page.locator('[data-ae-key="bis"].is-active').count(), 1);
+    assert.equal(await page.locator('#keyboard-panel').evaluate(node => node.getBoundingClientRect().top + window.scrollY), staffY);
+    await set({low:60, high:60, material:'white'});
 
     await page.locator('#theme-toggle').click();
     await page.reload();
@@ -103,6 +152,8 @@ module.exports = async function pitchChecks(browser, midiPage) {
     assert.equal(await page.locator('#midi-offset').inputValue(), '-12');
     assert.equal(await page.locator('#low').inputValue(), '60');
     assert.equal(await page.locator('#show-targets').isChecked(), true);
+    assert.equal(await page.locator('#show-fingering').isChecked(), true);
+    assert.equal(await page.locator('#fingering-panel').isVisible(), true);
 
     const helpEvent = page.waitForEvent('popup');
     await page.locator('.header-help').click();

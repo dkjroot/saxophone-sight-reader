@@ -57,17 +57,17 @@ button and pressing **Space** or **Enter**.
    or Edge, click **Connect MIDI**, allow access, and choose the Aerophone
    under **Input**. Play a note and check **Played** in the Pitch monitor.
    [Roland Aerophone GO manual](https://static.roland.com/assets/media/pdf/AE-05_eng01_W.pdf)
-2. **Check the octave and transposition.** With the Aerophone’s **Transpose**
-   knob at **C**, start with **Instrument → MIDI pitch mapping → Written pitch
-   · Aerophone in C**. If you use a transposed setting, click **Calibrate
-   written C4** and play the C on the first ledger line below the treble staff.
-   The app measures the MIDI note and accounts for the octave as well. The
-   concert-pitch presets are also available if you know what your controller
-   sends.
+2. **Check the octave and transposition.** Open the **Instrument & Audio** tab
+   below the stage. With the Aerophone’s **Transpose** knob at **C**, start
+   with **Instrument → MIDI pitch mapping → Written pitch · Aerophone in C**.
+   If you use a transposed setting, click **Calibrate written C4** and play the
+   C on the first ledger line below the treble staff. The app measures the MIDI
+   note and accounts for the octave as well. The concert-pitch presets are also
+   available if you know what your controller sends.
 3. **Set your playable range.** The default written range is **B♭3–F♯6**.
    Under **Instrument**, adjust **Lowest written note** and **Highest written
    note**, or use **Learn lowest note** and **Learn highest note** and play
-   each endpoint. **Reading register** in **Practice setup** narrows the
+   each endpoint. **Reading register** in the **Practice** tab narrows the
    exercise further. **Core · D4–D5** is a good place to start.
 
 **Bluetooth MIDI on a Mac:** Set the Aerophone’s power switch to the Bluetooth
@@ -81,33 +81,39 @@ unavailable, try USB.
 
 ## Your first exercise
 
-1. Choose **Pitch practice** at the top of the page. Under **Practice setup**,
+1. Choose **Pitch practice** at the top of the page. In the **Practice** tab,
    choose **Pitch drills** in **Source**, **C major / A minor** in **Key**, and
    **Core · D4–D5** in **Reading register**. Try **Blues scale**, **Dominant
    bebop scale** or **ii–V–I arpeggios** when you want a different line.
 2. Play the marked note on the staff. The app waits for the correct pitch,
    and the arrow tells you whether to play higher or lower. **Show note names**
-   gives you the written names. **Mark target** puts a diamond on the matching
-   pitch button.
-3. Leave **Advancement** on **Fluid** to slur between different pitches.
+   (or the **Note names** pill on the stage) gives you the written names.
+   **Mark target** puts a diamond on the matching pitch button.
+3. Toggle **Aerophone fingering** on the stage if you want a live Roland
+   Aerophone GO (AE‑05) fingering diagram beside the staff. It stays off by
+   default, remembers your choice locally, supports standard alternate
+   fingerings (like Bis B♭, Side C, and Front F), and keeps the note name
+   hidden until **Show note names** is turned on.
+4. Leave **Advancement** on **Fluid** to slur between different pitches.
    Articulate repeated notes afresh. **Release each note** waits for the
    release before advancing. **Repeat passage** loops the same line,
    **Continuous** keeps going, and **Stop at end** gives you one pass.
    **Scrolling** and **Look-ahead** control how much notation you see.
 
-Use the Aerophone’s own sound or enable **Sound my playing** for browser
-audio. **Hear target** plays a reference note, and **Metronome** gives you a
-click. You can turn on **Save history locally** under **Progress** to keep
-your response times and first-try accuracy between visits.
+Use the Aerophone’s own sound or enable **Sound my playing** in **Instrument &
+Audio** for browser audio. **Hear target** plays a reference note, and
+**Metronome** gives you a click (both are also right on the stage bar). You
+can turn on **Save history locally** under **Progress** to keep your response
+times and first-try accuracy between visits.
 
 ## Practise a tune
 
-Scroll to **MIDI files & library**. Choose a **Piece**, click **Load piece**,
-then click **Start practising this passage**. Loading opens a preview, so
-you can listen with **Play source passage** or choose a shorter section
-first. The library includes *Indiana*, *Swing Low, Sweet Chariot*, an
-excerpt from *The Entertainer*, and five originals in blues, swing, ballad,
-bossa nova and funk styles. All eight use written sax pitch.
+Open the **Library & Files** tab under **MIDI files & library**. Choose a
+**Piece**, click **Load piece**, then click **Start practising this passage**.
+Loading opens a preview, so you can listen with **Play source passage** or
+choose a shorter section first. The library includes *Indiana*, *Swing Low,
+Sweet Chariot*, an excerpt from *The Entertainer*, and five originals in blues,
+swing, ballad, bossa nova and funk styles. All eight use written sax pitch.
 [Music credits and source editions](static/library/NOTICES.md)
 
 - In **Pitch practice**, the **MIDI melody** source waits for each pitch.
@@ -121,19 +127,19 @@ bossa nova and funk styles. All eight use written sax pitch.
 
 ## Bring your own music
 
-- **MIDI:** In **MIDI files & library**, use **Choose MIDI file** for a
+- **MIDI:** In **Library & Files**, use **Choose MIDI file** for a
   `.mid` or `.midi` file up to 256 KB. Select the melody track, choose a
   section or adjust **First attack** and **Last attack**, then start practising.
   If several selected notes start together, the app takes the highest one in
   your range. Use **File pitch mapping** to convert a concert-pitch file to
   written sax pitch. The instrument’s live mapping is a separate setting.
   **Save passage** remembers the selection when you reopen the same file.
-- **MusicXML:** Switch to **Passage study** and use **Import MusicXML**.
-  Choose an uncompressed score-partwise `.musicxml` or `.xml` file up to
-  256 KB with one treble staff and one voice. The importer uses its written
-  pitches and supports ordinary and dotted notes, rests and ties. Use a file
-  with explicit note values. Tuplets, grace notes, repeat traversal and DTD
-  declarations are outside the supported subset.
+- **MusicXML:** Switch to **Passage study**, open the **Practice** tab, and use
+  **Import MusicXML**. Choose an uncompressed score-partwise `.musicxml` or
+  `.xml` file up to 256 KB with one treble staff and one voice. The importer
+  uses its written pitches and supports ordinary and dotted notes, rests and
+  ties. Use a file with explicit note values. Tuplets, grace notes, repeat
+  traversal and DTD declarations are outside the supported subset.
 
 Imported music stays in memory for the session. Your settings, saved passage
 selections and any saved history belong to the browser and local address you

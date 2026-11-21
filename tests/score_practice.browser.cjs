@@ -32,6 +32,8 @@ module.exports = async function studyChecks(browser, midiPage) {
     assert.equal(await page.locator('.vf-stavetie').count(), 1);
     assert.equal(await page.locator('.vf-stave').count(), 1);
     assert.match(await page.locator('#study-source-status').innerText(), /written pitches/);
+    assert.equal(await page.locator('#tab-progress').isVisible(), false);
+    await page.locator('#tab-instrument').click();
     await page.selectOption('#midi-offset','-9');
     await connect();
     await page.locator('#study-start').click();
@@ -45,6 +47,7 @@ module.exports = async function studyChecks(browser, midiPage) {
     await page.selectOption('#study-bars','1');
     assert.equal(await page.locator('#feedback').innerText(),'Paused');
 
+    await page.locator('#tab-practice').click();
     await page.locator('#study-file').setInputFiles({name:'bad.musicxml',mimeType:'application/xml',buffer:Buffer.from('<broken>')});
     await page.waitForFunction(() => document.getElementById('study-import-status').textContent.includes('not well formed'));
     assert.equal(await page.locator('#practice-title').innerText(), 'Alto study');

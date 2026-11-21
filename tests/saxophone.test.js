@@ -9,6 +9,7 @@ import {filterStudy} from '../static/passage_filters.js';
 import {compileScore} from '../static/score_model.js';
 import {writtenKey} from '../static/score_key.js';
 import {MIDI_OFFSETS, makeSaxPhrase, soundingPitch, WindPerformance, writtenPitch} from '../static/saxophone.js';
+import {AE05_KEYS, aerophoneGoFingering, formatFingeringKeys} from '../static/fingering.js';
 
 const defaults = {sax:true, key:'C', source:'random', material:'white', low:58, high:90, span:'standard', length:12};
 const pitches = phrase => phrase.map(([note]) => note.midi);
@@ -131,4 +132,29 @@ test('built-in sax tunes retain their written key, range and attacks in both pra
     assert.equal(study.staves.length, 1);
     assert.deepEqual(study.sounds.map(note => note.midi), pitches(outline.targets), entry.title);
   }
+});
+
+test('Aerophone GO (AE-05) fingering chart covers B♭2–F♯6, alternates and out-of-range fallback', () => {
+  assert.equal(Object.keys(AE05_KEYS).length, 24);
+  for (let midi = 46; midi <= 90; midi++) {
+    const info = aerophoneGoFingering(midi);
+    assert.equal(info.supported, true, `MIDI ${midi} should be supported`);
+    for (const id of info.keys) assert.ok(AE05_KEYS[id], `Unknown AE-05 key ${id}`);
+    if (midi <= 57) assert.ok(info.keys.includes('oct-down'), `MIDI ${midi} uses -1 octave key`);
+    else if (midi <= 73) {
+      assert.ok(!info.keys.includes('oct-up') && !info.keys.includes('oct-down'), `MIDI ${midi} uses no octave key`);
+    } else assert.ok(info.keys.includes('oct-up'), `MIDI ${midi} uses +1 octave key`);
+  }
+  assert.deepEqual(aerophoneGoFingering(58).keys, ['lh1','lh2','lh3','rh1','rh2','rh3','low-c','low-bb']);
+  assert.deepEqual(aerophoneGoFingering(70, 0).keys, ['lh1','lh2','ta']);
+  assert.deepEqual(aerophoneGoFingering(70, 1).keys, ['lh1','bis']);
+  assert.deepEqual(aerophoneGoFingering(70, 2).keys, ['lh1','rh1']);
+  assert.deepEqual(aerophoneGoFingering(72, 1).keys, ['lh1','tc']);
+  assert.deepEqual(aerophoneGoFingering(89, 1).keys, ['oct-up','front-f','lh2']);
+  assert.deepEqual(aerophoneGoFingering(90, 0).keys, ['oct-up','c1','c2','c3','c4','c5']);
+  assert.equal(formatFingeringKeys([]), 'Open (all keys released)');
+  assert.match(formatFingeringKeys(['oct-up','lh1','lh2','ta']), /\+1 · 1 · 2 · Ta/);
+  assert.equal(aerophoneGoFingering(45).supported, false);
+  assert.equal(aerophoneGoFingering(91).supported, false);
+  assert.equal(aerophoneGoFingering(null).supported, false);
 });
