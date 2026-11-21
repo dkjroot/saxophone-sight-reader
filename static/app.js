@@ -62,9 +62,10 @@ function setMapping(offset) {
   }
   select.value = offset;
 }
+const CALIBRATE_NOTE = {midi: 67, letter: 'G', accidental: 0, octave: 4, staff: 'treble'};
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
-  if (Number.isInteger(saved['midi-offset']) && saved['midi-offset'] >= -60 && saved['midi-offset'] <= 67) setMapping(saved['midi-offset']);
+  if (Number.isInteger(saved['midi-offset']) && saved['midi-offset'] >= -67 && saved['midi-offset'] <= 67) setMapping(saved['midi-offset']);
   for (const id of controls) {
     if (saved[id] !== undefined && (['low', 'high'].includes(id) ? Number.isInteger(+saved[id]) && +saved[id] >= 0 && +saved[id] <= 127 : [...$(id).options].some(o => !o.disabled && o.value === String(saved[id])))) $(id).value = saved[id];
   }
@@ -156,10 +157,29 @@ const fingeringChart = new AerophoneFingeringChart({
   variantBar: $('fingering-variants'),
 });
 const fingeringStorageKey = 'saxophone-sight-reader-show-fingering';
+const fingeringMirrorStorageKey = 'saxophone-sight-reader-fingering-mirrored';
+function applyFingeringMirror(mirrored) {
+  fingeringChart.setMirrored(mirrored);
+  $('fingering-mirrored').setAttribute('aria-pressed', String(mirrored));
+  $('fingering-straight').setAttribute('aria-pressed', String(!mirrored));
+}
+try { applyFingeringMirror(localStorage.getItem(fingeringMirrorStorageKey) !== 'false'); } catch { applyFingeringMirror(true); }
+$('fingering-mirrored').addEventListener('click', () => {
+  applyFingeringMirror(true);
+  try { localStorage.setItem(fingeringMirrorStorageKey, 'true'); } catch { /* Session still works. */ }
+});
+$('fingering-straight').addEventListener('click', () => {
+  applyFingeringMirror(false);
+  try { localStorage.setItem(fingeringMirrorStorageKey, 'false'); } catch { /* Session still works. */ }
+});
 function syncFingeringPanel() {
   const show = $('show-fingering').checked;
   $('fingering-panel').hidden = !show;
   if (!show) return;
+  if (learning === 'mapping') {
+    fingeringChart.setNote(CALIBRATE_NOTE, {showName: true, label: 'Calibrate · G4'});
+    return;
+  }
   const active = workspace === 'study' ? authored?.target ?? [] : target;
   fingeringChart.setNote(active[0] ?? null, {showName: $('reveal').checked});
 }
@@ -172,12 +192,8 @@ $('show-fingering').addEventListener('change', () => {
   const show = $('show-fingering').checked;
   applyFingeringVisibility(show);
   try { localStorage.setItem(fingeringStorageKey, String(show)); } catch { /* Session still works. */ }
-  fitPlayingArea();
-});
-$('close-fingering').addEventListener('click', () => {
-  applyFingeringVisibility(false);
-  try { localStorage.setItem(fingeringStorageKey, 'false'); } catch { /* Session still works. */ }
-  fitPlayingArea();
+  if (layoutEditor?.active) layoutEditor.apply();
+  else fitPlayingArea();
 });
 
 function positionPill(container, pill, activeButton) {
@@ -582,7 +598,7 @@ $('reset').addEventListener('click', () => { performance.clear(); update(); });
 for (const [button, mode, prompt] of [
   ['learn-low', 'low', 'Play your lowest note.'],
   ['learn-high', 'high', 'Play your highest note.'],
-  ['calibrate', 'mapping', 'Play written middle C (C4) on your instrument.'],
+  ['calibrate', 'mapping', 'Play written G4 (left hand 1 · 2 · 3, no octave key).'],
 ]) {
   $(button).addEventListener('click', () => {
     learning = learning === mode ? null : mode;
@@ -591,6 +607,7 @@ for (const [button, mode, prompt] of [
     $(mode === 'mapping' ? 'mapping-status' : 'range-status').textContent = learning ? prompt : 'Cancelled.';
     if (learning) progress.pause('learning');
     else progress.resume('learning');
+    syncFingeringPanel();
   });
 }
 let midiPulseTimer = null;
@@ -619,15 +636,17 @@ function onMidi(event, inputId) {
       learning = null;
       progress.resume('learning');
       if (mode === 'mapping') {
-        setMapping(note - 60);
+        const calibratedOffset = note - CALIBRATE_NOTE.midi;
+        setMapping(calibratedOffset);
         $('midi-offset').dispatchEvent(new Event('change'));
-        $('mapping-status').textContent = `Written C4 mapped to MIDI ${note}.`;
+        syncFingeringPanel();
+        $('mapping-status').textContent = `Written G4 mapped to MIDI ${note} (${calibratedOffset > 0 ? '+' : ''}${calibratedOffset} semitones).`;
       } else if (written >= 0 && written <= 127) {
         $(mode).value = written;
         $(mode).dispatchEvent(new Event('change'));
         $('range-status').textContent = `Learned ${noteName(spell(written, true))} (MIDI ${note}).`;
       } else {
-        $('range-status').textContent = 'This note falls outside the written MIDI range. Check MIDI pitch mapping.';
+        $('range-status').textContent = 'This note falls outside the written MIDI range. Check Instrument transposition.';
       }
       return;
     }
@@ -706,7 +725,7 @@ window.addEventListener('resize', () => {applyDensity(); fitKeyboard(); drawStaf
 rangeLabels(); drawKeyboard(); newTarget(); syncQuickBar();
 requestAnimationFrame(() => { positionModePill(); positionStudioPill(); });
 
-layoutEditor=new LayoutEditor({workspace:$('playing-layout'),panels:{staff:$('staff-panel'),keyboard:$('keyboard-panel')},selection:$('density'),scaleInput:$('staff-scale'),onChange:()=>{
+layoutEditor=new LayoutEditor({workspace:$('playing-layout'),panels:{staff:$('staff-panel'),keyboard:$('keyboard-panel'),fingering:$('fingering-panel')},selection:$('density'),scaleInput:$('staff-scale'),onChange:()=>{
   applyDensity();fitKeyboard();drawStaff();scrollToCurrent();
 }});
 layoutEditor.restore();

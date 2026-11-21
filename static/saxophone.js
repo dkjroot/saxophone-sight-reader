@@ -1,6 +1,6 @@
 import {KEYS, Performance, spell, spellInKey} from './core.js';
 
-export const MIDI_OFFSETS = Object.freeze({written: 0, soprano: -2, alto: -9, tenor: -14, baritone: -21});
+export const MIDI_OFFSETS = Object.freeze({written: 0, ae05Eb: 3, ae05Bb: -2, soprano: -2, alto: -9, tenor: -14, baritone: -21});
 const REGISTERS = {core: [62, 74], standard: [58, 90], full: [0, 127]};
 export const SOURCES = {
   random: 'Pitch drills', scale: 'Scale runs', blues: 'Blues scale',

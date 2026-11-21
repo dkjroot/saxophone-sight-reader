@@ -42,11 +42,17 @@ test('jazz pitch recipes preserve spelling, direction and refill phase', () => {
 });
 
 test('written and sounding pitches map by exact octave as well as pitch class', () => {
-  for (const [instrument, concertC] of Object.entries({written:60, soprano:58, alto:51, tenor:46, baritone:39})) {
+  for (const [instrument, concertC] of Object.entries({written:60, ae05Eb:63, ae05Bb:58, soprano:58, alto:51, tenor:46, baritone:39})) {
     const offset = MIDI_OFFSETS[instrument];
     assert.equal(soundingPitch(60, offset), concertC);
     assert.equal(writtenPitch(concertC, offset), 60);
   }
+  assert.equal(MIDI_OFFSETS.ae05Eb, 3);
+  assert.equal(MIDI_OFFSETS.ae05Bb, -2);
+  assert.equal(soundingPitch(67, MIDI_OFFSETS.ae05Eb), 70);
+  assert.equal(writtenPitch(70, MIDI_OFFSETS.ae05Eb), 67);
+  assert.equal(soundingPitch(67, MIDI_OFFSETS.ae05Bb), 65);
+  assert.equal(writtenPitch(65, MIDI_OFFSETS.ae05Bb), 67);
   assert.equal(writtenKey('C', MIDI_OFFSETS.alto), 'A');
   assert.equal(writtenKey('C', MIDI_OFFSETS.tenor), 'D');
 });

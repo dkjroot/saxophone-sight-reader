@@ -18,7 +18,7 @@ export class LayoutEditor {
         control.addEventListener('keydown',event=>{
           const direction={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[event.key];
           if(!direction) return;
-          event.preventDefault();this.activate();
+          event.preventDefault();this.activate();this.ensurePanelBox(name);
           const box=this.state.panels[name], step=event.shiftKey?40:10;
           box[resizing?'width':'x']+=direction[0]*step;box[resizing?'height':'y']+=direction[1]*step;
           this.state.panels[name]=fitCustomPanels(this.state.panels,this.workspace.clientWidth)[name];
@@ -47,6 +47,17 @@ export class LayoutEditor {
     this.scaleInput.value=preset==='720'?75:100;
     document.getElementById('staff-scale-value').textContent=this.scaleInput.value+'%';
   }
+  ensurePanelBox(name) {
+    if(!this.state) return;
+    if(this.state.panels[name]) return;
+    const available=Math.max(200,this.workspace.clientWidth||1200);
+    const staff=this.state.panels.staff;
+    const width=Math.min(268,Math.max(200,available));
+    const height=Math.max(320,Math.min(480,staff?.height??360));
+    const rightOfStaff=staff?staff.x+staff.width+12:0;
+    const x=staff&&rightOfStaff+width<=available?rightOfStaff:Math.max(0,available-width);
+    this.state.panels[name]={x,y:staff?.y??0,width,height};
+  }
   activate(restore=false) {
     if(this.active) return;
     let origin;
@@ -54,7 +65,9 @@ export class LayoutEditor {
       origin=this.workspace.getBoundingClientRect();
       this.state={version:1,density:document.documentElement.dataset.density||'compact',scale:document.documentElement.dataset.layout==='720' ? .75 : 1,panels:{}};
       for(const [name,panel] of Object.entries(this.panels)) {
+        if(panel.hidden) continue;
         const box=panel.getBoundingClientRect();
+        if(!box.width || !box.height) continue;
         this.state.panels[name]={x:box.x-origin.x,y:box.y-origin.y,width:box.width,height:box.height};
       }
     }
@@ -68,10 +81,14 @@ export class LayoutEditor {
   }
   apply() {
     if(!this.active) return;
+    for(const [name,panel] of Object.entries(this.panels)) {
+      if(!panel.hidden) this.ensurePanelBox(name);
+    }
     const width=this.workspace.clientWidth, fitted=fitCustomPanels(this.state.panels,width);
     let bottom=0;
     for(const [name,panel] of Object.entries(this.panels)) {
       // Fit to today's viewport without overwriting the saved desktop geometry.
+      if(panel.hidden || !fitted[name]) continue;
       const box=fitted[name];
       Object.assign(panel.style,{left:box.x+'px',top:box.y+'px',width:box.width+'px',height:box.height+'px'});
       bottom=Math.max(bottom,box.y+box.height);
@@ -96,7 +113,7 @@ export class LayoutEditor {
   }
   begin(event,name,resizing) {
     if(event.button!==0 || this.drag) return;
-    event.preventDefault();this.activate();this.apply();
+    event.preventDefault();this.activate();this.ensurePanelBox(name);this.apply();
     const handle=event.currentTarget;
     const box=fitCustomPanels(this.state.panels,this.workspace.clientWidth)[name];
     this.state.panels[name]={...box};

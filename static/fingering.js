@@ -193,6 +193,11 @@ export class AerophoneFingeringChart {
     this.variantByNote = new Map();
     this.currentNote = null;
     this.showName = false;
+    this.labelOverride = null;
+    this.mirrored = false;
+    this.svg = null;
+    this.scene = null;
+    this.unflipTexts = [];
     this.lastRenderedKey = '';
     this.mountSvg();
   }
@@ -205,13 +210,24 @@ export class AerophoneFingeringChart {
       role: 'img',
       'aria-label': 'Roland Aerophone GO AE-05 fingering diagram',
     });
+    const scene = svgEl('g', {class: 'ae-scene'});
+    this.unflipTexts = [];
+
+    const octLabel = svgEl('text', {class: 'ae-region-label', x: 24, y: 69, 'text-anchor': 'middle'}, 'OCTAVE');
+    const lhLabel = svgEl('text', {class: 'ae-region-label', x: 54, y: 74, 'text-anchor': 'start'}, 'LH');
+    const rhLabel = svgEl('text', {class: 'ae-region-label', x: 158, y: 242, 'text-anchor': 'end'}, 'RH');
+    this.unflipTexts.push(
+      {node: octLabel, x: 24, baseAnchor: 'middle', mirroredAnchor: 'middle'},
+      {node: lhLabel, x: 54, baseAnchor: 'start', mirroredAnchor: 'end'},
+      {node: rhLabel, x: 158, baseAnchor: 'end', mirroredAnchor: 'start'},
+    );
 
     // Subtle chassis & mouthpiece silhouette
-    svg.append(
+    scene.append(
       // Rear octave dock enclosure
       svgEl('rect', {class: 'ae-octave-dock', x: 4, y: 74, width: 40, height: 82, rx: 14}),
       svgEl('line', {class: 'ae-octave-link', x1: 44, y1: 115, x2: 78, y2: 115}),
-      svgEl('text', {class: 'ae-region-label', x: 24, y: 69, 'text-anchor': 'middle'}, 'OCTAVE'),
+      octLabel,
       svgEl('circle', {class: 'ae-thumb-rest', cx: 24, cy: 115, r: 5}),
 
       // Mouthpiece & neck silhouette
@@ -227,8 +243,8 @@ export class AerophoneFingeringChart {
 
       // Subtle ergonomic hand divider & hand labels
       svgEl('line', {class: 'ae-hand-divider', x1: 60, y1: 196, x2: 164, y2: 196}),
-      svgEl('text', {class: 'ae-region-label', x: 54, y: 74}, 'LH'),
-      svgEl('text', {class: 'ae-region-label', x: 158, y: 242, 'text-anchor': 'end'}, 'RH'),
+      lhLabel,
+      rhLabel,
     );
 
     for (const shape of KEY_SHAPES) {
@@ -244,26 +260,52 @@ export class AerophoneFingeringChart {
       } else {
         g.append(svgEl('rect', {class: 'ae-key-cap', x: shape.x, y: shape.y, width: shape.width, height: shape.height, rx: shape.rx}));
       }
-      g.append(svgEl('text', {
+      const keyLabel = svgEl('text', {
         class: 'ae-key-label',
         x: shape.lx,
         y: shape.ly,
         'dominant-baseline': 'central',
         'text-anchor': 'middle',
-      }, meta.label));
-      svg.append(g);
+      }, meta.label);
+      this.unflipTexts.push({node: keyLabel, x: shape.lx, baseAnchor: 'middle', mirroredAnchor: 'middle'});
+      g.append(keyLabel);
+      scene.append(g);
       this.keyNodes.set(shape.id, g);
     }
 
+    svg.append(scene);
+    this.svg = svg;
+    this.scene = scene;
+    this.setMirrored(this.mirrored);
     this.svgContainer.replaceChildren(svg);
   }
 
-  setNote(note, {showName = false} = {}) {
+  setMirrored(mirrored) {
+    this.mirrored = Boolean(mirrored);
+    if (!this.svg || !this.scene) return;
+    this.svg.dataset.mirrored = String(this.mirrored);
+    if (this.mirrored) {
+      this.scene.setAttribute('transform', 'translate(186 0) scale(-1 1)');
+      for (const {node, x, mirroredAnchor} of this.unflipTexts) {
+        node.setAttribute('transform', `translate(${x * 2} 0) scale(-1 1)`);
+        node.setAttribute('text-anchor', mirroredAnchor);
+      }
+    } else {
+      this.scene.removeAttribute('transform');
+      for (const {node, baseAnchor} of this.unflipTexts) {
+        node.removeAttribute('transform');
+        node.setAttribute('text-anchor', baseAnchor);
+      }
+    }
+  }
+
+  setNote(note, {showName = false, label = null} = {}) {
     this.currentNote = note || null;
     this.showName = Boolean(showName);
+    this.labelOverride = label || null;
     const midi = note?.midi ?? null;
     const variantIndex = midi === null ? 0 : (this.variantByNote.get(midi) ?? 0);
-    const renderKey = `${midi ?? 'none'}:${variantIndex}:${this.showName ? '1' : '0'}`;
+    const renderKey = `${midi ?? 'none'}:${variantIndex}:${this.showName ? '1' : '0'}:${this.labelOverride ?? ''}`;
     if (renderKey === this.lastRenderedKey) return;
     this.lastRenderedKey = renderKey;
 
@@ -278,14 +320,14 @@ export class AerophoneFingeringChart {
     const info = aerophoneGoFingering(midi, variantIndex);
     if (!info.supported) {
       this.applyKeys([]);
-      if (this.noteLabel) this.noteLabel.textContent = this.showName ? noteName(note) : 'Out of AE-05 range';
+      if (this.noteLabel) this.noteLabel.textContent = this.labelOverride ?? (this.showName ? noteName(note) : 'Out of AE-05 range');
       if (this.keysLabel) this.keysLabel.textContent = 'Supported chart: B♭2–F♯6';
       this.renderVariants(null);
       return;
     }
 
     this.applyKeys(info.keys);
-    if (this.noteLabel) this.noteLabel.textContent = this.showName ? noteName(note) : 'Target note';
+    if (this.noteLabel) this.noteLabel.textContent = this.labelOverride ?? (this.showName ? noteName(note) : 'Target note');
     if (this.keysLabel) this.keysLabel.textContent = formatFingeringKeys(info.keys);
     this.renderVariants(info);
   }
@@ -319,7 +361,7 @@ export class AerophoneFingeringChart {
       button.addEventListener('click', () => {
         this.variantByNote.set(info.midi, index);
         this.lastRenderedKey = '';
-        this.setNote(this.currentNote, {showName: this.showName});
+        this.setNote(this.currentNote, {showName: this.showName, label: this.labelOverride});
       });
       return button;
     }));

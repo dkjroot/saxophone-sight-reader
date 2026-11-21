@@ -99,19 +99,26 @@
     </section>
 
     <aside class="card fingering-card" id="fingering-panel" aria-label="Aerophone GO fingering chart" hidden>
-      <div class="fingering-head">
-        <div>
-          <span class="fingering-eyebrow">Roland AE-05 · Sax mode</span>
+      <div class="fingering-head layout-toolbar">
+        <button type="button" class="quiet layout-move" aria-label="Move Aerophone fingering" title="Drag to move Aerophone fingering; arrow keys move, Shift for larger steps">⠿</button>
+        <div class="fingering-title">
+          <span class="fingering-eyebrow">AE-05 · Sax fingering</span>
           <h2>Aerophone GO</h2>
         </div>
-        <button type="button" id="close-fingering" class="quiet icon-close" aria-label="Hide Aerophone fingering" title="Hide fingering">×</button>
       </div>
       <div class="fingering-readout">
-        <strong id="fingering-note-name">—</strong>
+        <div class="fingering-readout-top">
+          <strong id="fingering-note-name">—</strong>
+          <div class="fingering-orientation" role="group" aria-label="Fingering chart orientation">
+            <button type="button" id="fingering-mirrored" class="quiet orientation-pill" aria-pressed="true" title="Mirrored view (matches your hands while holding the horn)">Mirrored</button>
+            <button type="button" id="fingering-straight" class="quiet orientation-pill" aria-pressed="false" title="Straight front view of the instrument">Straight</button>
+          </div>
+        </div>
         <span id="fingering-keys-text" class="fingering-keys-text">Play or select a target note</span>
       </div>
       <div id="fingering-diagram" class="fingering-diagram"></div>
       <div id="fingering-variants" class="fingering-variants" role="group" aria-label="Alternate fingerings" hidden></div>
+      <button type="button" class="quiet layout-resize" aria-label="Resize Aerophone fingering" title="Drag to resize Aerophone fingering; arrow keys resize, Shift for larger steps">↘</button>
     </aside>
 
     <section class="card keyboard-card" id="keyboard-panel" aria-label="Pitch monitor">
@@ -217,8 +224,8 @@
       <div class="instrument-bento">
         <div class="card settings bento-card">
           <h2>Instrument</h2>
-          <label>MIDI pitch mapping <select id="midi-offset"><option value="0">Written pitch · Aerophone in C</option><option value="-9">Concert pitch · E♭ alto</option><option value="-14">Concert pitch · B♭ tenor</option><option value="-2">Concert pitch · B♭ soprano</option><option value="-21">Concert pitch · E♭ baritone</option></select></label>
-          <button type="button" id="calibrate" class="quiet">Calibrate written C4</button>
+          <label>Instrument transposition <select id="midi-offset"><option value="3" selected>Aerophone GO in E♭ (+3 · Alto / Baritone)</option><option value="-2">Aerophone GO in B♭ (-2 · Soprano / Tenor)</option><option value="0">Aerophone GO in C (0 · Written pitch)</option><option value="-9">Concert pitch · E♭ alto (-9)</option><option value="-14">Concert pitch · B♭ tenor (-14)</option><option value="-21">Concert pitch · E♭ baritone (-21)</option></select></label>
+          <button type="button" id="calibrate" class="quiet">Calibrate (play G4 · 1–2–3)</button>
           <p class="small" id="mapping-status" role="status"></p>
           <label>Lowest written note <output id="low-label"></output><input id="low" type="range" min="0" max="127" value="58"></label>
           <label>Highest written note <output id="high-label"></output><input id="high" type="range" min="0" max="127" value="90"></label>
@@ -251,7 +258,7 @@
           <h2>Workspace</h2>
           <label>Layout <select id="density"><option value="auto">Automatic</option><option value="720">720p</option><option value="1080">1080p</option><option value="1440">1440p</option><option value="2160">2160p</option><option value="custom">Custom</option></select></label>
           <label>Pitch button size <select id="key-size"><option value="auto">Automatic</option><option value="46">Large</option><option value="38">Medium</option><option value="32">Small</option></select></label>
-          <p class="small workspace-tip">Drag the <strong>⠿</strong> handle or <strong>↘</strong> corner on the staff or pitch monitor to arrange custom panels. Toggle <strong>Aerophone fingering</strong> on the stage for live AE-05 key positions.</p>
+          <p class="small workspace-tip">Drag the <strong>⠿</strong> handle or <strong>↘</strong> corner on the staff, pitch monitor, or Aerophone fingering panel to arrange custom panels. Toggle <strong>Aerophone fingering</strong> on the stage for live AE-05 key positions.</p>
         </div>
       </div>
     </div>

@@ -1144,10 +1144,17 @@ test('custom panels validate saved geometry and remain reachable on smaller view
   const panels={staff:{x:0,y:0,width:700,height:600},keyboard:{x:720,y:0,width:400,height:240}};
   const saved={version:1,density:'compact',scale:.65,panels};
   assert.deepEqual(parseCustomLayout(JSON.stringify(saved)),saved);
-  for(const text of ['bad','null','{}',JSON.stringify({...saved,version:2}),JSON.stringify({...saved,scale:8}),JSON.stringify({...saved,density:'unknown'}),JSON.stringify({...saved,panels:{staff:panels.staff}}),JSON.stringify({...saved,panels:{...panels,keyboard:{...panels.keyboard,width:-1}}})]) assert.equal(parseCustomLayout(text),null);
+  const withFingering={...saved,panels:{...panels,fingering:{x:720,y:252,width:268,height:360}}};
+  assert.deepEqual(parseCustomLayout(JSON.stringify(withFingering)),withFingering);
+  for(const text of ['bad','null','{}',JSON.stringify({...saved,version:2}),JSON.stringify({...saved,scale:8}),JSON.stringify({...saved,density:'unknown'}),JSON.stringify({...saved,panels:{staff:panels.staff}}),JSON.stringify({...saved,panels:{...panels,keyboard:{...panels.keyboard,width:-1}}}),JSON.stringify({...saved,panels:{...panels,fingering:{x:0,y:0,width:0,height:300}}})]) assert.equal(parseCustomLayout(text),null);
   const mobile=fitCustomPanels(panels,288);
   assert.equal(mobile.staff.width,288);assert.equal(mobile.keyboard.x,0);
   assert.ok(mobile.keyboard.y>=mobile.staff.y+mobile.staff.height);
+  const mobileWithFingering=fitCustomPanels(withFingering.panels,288);
+  assert.equal(mobileWithFingering.fingering.width,268);
+  assert.equal(fitCustomPanels(withFingering.panels,240).fingering.width,240);
+  assert.ok(mobileWithFingering.fingering.y>=mobileWithFingering.staff.y+mobileWithFingering.staff.height);
+  assert.equal(withFingering.panels.fingering.x,720);
   assert.deepEqual(fitCustomPanels(panels,1200),panels);
   assert.equal(panels.keyboard.x,720,'viewport fitting must not destroy the desktop save');
   assert.equal(fitCustomPanels({...panels,staff:{...panels.staff,width:280,height:180}},1200).staff.height,320);

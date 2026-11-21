@@ -854,19 +854,22 @@ button.layout-resize:hover { color: var(--accent); background: transparent; }
 .fingering-card {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 10px 13px;
+  gap: 5px;
+  padding: 9px 13px 14px;
   overflow: hidden;
 }
 
 .fingering-head {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-start;
   gap: 8px;
-  padding-bottom: 5px;
+  padding-bottom: 6px;
+  margin-bottom: 2px;
   border-bottom: 1px solid var(--line);
 }
+
+.fingering-title { min-width: 0; }
 
 .fingering-eyebrow {
   display: block;
@@ -882,28 +885,53 @@ button.layout-resize:hover { color: var(--accent); background: transparent; }
   line-height: 1.2;
 }
 
-.icon-close {
-  width: 26px;
-  height: 26px;
-  padding: 0;
-  font-size: 18px;
-  line-height: 1;
-  border-radius: 8px;
-}
-
 .fingering-readout {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   padding: 6px 9px;
   border-radius: 10px;
   background: var(--glass-inset);
   border: 1px solid var(--glass-border);
 }
 
+.fingering-readout-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.fingering-orientation {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+
+.orientation-pill {
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+}
+
+.orientation-pill[aria-pressed=true] {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  color: var(--accent);
+}
+
 #fingering-note-name {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
@@ -928,13 +956,13 @@ button.layout-resize:hover { color: var(--accent); background: transparent; }
 .ae05-svg {
   width: 100%;
   max-width: 196px;
-  max-height: 184px;
+  max-height: 156px;
   height: auto;
   display: block;
 }
 
 :root[data-layout="720"] .ae05-svg {
-  max-height: 168px;
+  max-height: 140px;
 }
 
 .ae-octave-dock,
@@ -1617,7 +1645,7 @@ button.layout-resize:hover { color: var(--accent); background: transparent; }
   margin-left: calc(50% - 50vw + 24px);
 }
 
-.custom-layout > :is(#staff-panel, #keyboard-panel) {
+.custom-layout > :is(#staff-panel, #keyboard-panel, #fingering-panel) {
   position: absolute;
   margin: 0;
   padding: 10px 12px 20px;
@@ -1626,14 +1654,8 @@ button.layout-resize:hover { color: var(--accent); background: transparent; }
   overflow: hidden;
 }
 
-.custom-layout #fingering-panel:not([hidden]) {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  width: 240px;
-  max-height: 75vh;
-  z-index: 30;
-}
+.custom-layout #fingering-panel .fingering-diagram { overflow: hidden; }
+.custom-layout #fingering-panel .ae05-svg { width: 100%; height: 100%; max-width: none; max-height: none; }
 
 .custom-layout .layout-toolbar { flex: none; }
 .custom-layout .practice-top { flex-wrap: wrap; }

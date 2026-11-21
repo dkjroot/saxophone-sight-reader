@@ -57,13 +57,13 @@ button and pressing **Space** or **Enter**.
    or Edge, click **Connect MIDI**, allow access, and choose the Aerophone
    under **Input**. Play a note and check **Played** in the Pitch monitor.
    [Roland Aerophone GO manual](https://static.roland.com/assets/media/pdf/AE-05_eng01_W.pdf)
-2. **Check the octave and transposition.** Open the **Instrument & Audio** tab
-   below the stage. With the Aerophone’s **Transpose** knob at **C**, start
-   with **Instrument → MIDI pitch mapping → Written pitch · Aerophone in C**.
-   If you use a transposed setting, click **Calibrate written C4** and play the
-   C on the first ledger line below the treble staff. The app measures the MIDI
-   note and accounts for the octave as well. The concert-pitch presets are also
-   available if you know what your controller sends.
+2. **Check the transposition and octave.** Open the **Instrument & Audio** tab
+   below the stage. The app defaults to **Instrument → Instrument transposition →
+   Aerophone GO in E♭ (+3 · Alto / Baritone)**, which matches the AE‑05’s
+   **Transpose** knob on **E♭** for alto sax fingerings. You can also switch
+   to **B♭**, **C**, or a concert-pitch preset, or click **Calibrate (play G4 ·
+   1–2–3)** and play written G4 (left hand `1 · 2 · 3`, no octave key) so the
+   app measures your MIDI note and octave automatically.
 3. **Set your playable range.** The default written range is **B♭3–F♯6**.
    Under **Instrument**, adjust **Lowest written note** and **Highest written
    note**, or use **Learn lowest note** and **Learn highest note** and play
@@ -91,9 +91,11 @@ unavailable, try USB.
    **Mark target** puts a diamond on the matching pitch button.
 3. Toggle **Aerophone fingering** on the stage if you want a live Roland
    Aerophone GO (AE‑05) fingering diagram beside the staff. It stays off by
-   default, remembers your choice locally, supports standard alternate
-   fingerings (like Bis B♭, Side C, and Front F), and keeps the note name
-   hidden until **Show note names** is turned on.
+   default, remembers your choice locally, lets you switch between **Mirrored**
+   (default player view) and **Straight** (front view), can be moved and resized
+   using its **⠿** and **↘** handles, supports standard alternate fingerings
+   (like Bis B♭, Side C, and Front F), and keeps the note name hidden until
+   **Show note names** is turned on.
 4. Leave **Advancement** on **Fluid** to slur between different pitches.
    Articulate repeated notes afresh. **Release each note** waits for the
    release before advancing. **Repeat passage** loops the same line,
@@ -172,7 +174,7 @@ with **Choose MIDI file**. The script only writes the shortlist. Add
   or Bluetooth MIDI port, then click **Refresh MIDI**. For a stuck note, click
   **Clear input**. Keep the practice page focused when you play.
   [Chrome’s MIDI permission guide](https://developer.chrome.com/blog/web-midi-permission-prompt)
-- **The staff asks for notes outside your range.** Check **MIDI pitch mapping**
+- **The staff asks for notes outside your range.** Check **Instrument transposition**
   first, then your learned range and **Reading register**. If you loaded a
   private MIDI file, check **File pitch mapping** and choose its melody track.
 

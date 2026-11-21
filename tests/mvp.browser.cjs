@@ -57,11 +57,11 @@ module.exports = async function workspaceChecks(browser, midiPage) {
     await page.locator('#tab-practice').click();
     await page.locator('#end-new').check();
     await connect();
-    await send([0x90,73,100]);
-    await page.waitForFunction(() => document.getElementById('score-playing').textContent.includes('source attacks 2–2'));
     await send([0x90,76,100]);
+    await page.waitForFunction(() => document.getElementById('score-playing').textContent.includes('source attacks 2–2'));
+    await send([0x90,79,100]);
     await page.waitForFunction(() => document.getElementById('feedback').textContent === '✓ Passage complete');
-    await send([0x80,76,0]);
+    await send([0x80,79,0]);
     await page.locator('#tab-library').click();
     await page.locator('#play-source').click();
     await page.waitForFunction(() => document.getElementById('source-playback-status').textContent.includes('Playing'));
@@ -95,6 +95,32 @@ module.exports = async function workspaceChecks(browser, midiPage) {
     await page.evaluate(() => window.scrollTo(0,0));
     await page.waitForTimeout(220);
     await page.screenshot({path:'test-results/saxophone-dark.png'});
+
+    // Verify Aerophone fingering panel can be moved and resized like staff/pitch monitor.
+    const box = selector => page.locator(selector).evaluate(node => {
+      const {left,top,width,height} = node.getBoundingClientRect();
+      return {left,top,width,height};
+    });
+    const beforeFingering = await box('#fingering-panel');
+    await page.locator('#fingering-panel .layout-move').focus();
+    await page.keyboard.press('Shift+ArrowDown');
+    await page.locator('#fingering-panel .layout-resize').focus();
+    await page.keyboard.press('Shift+ArrowDown');
+    assert.equal(await page.locator('#playing-layout').evaluate(n => n.classList.contains('custom-layout')), true);
+    const movedFingering = await box('#fingering-panel');
+    assert.ok(movedFingering.top > beforeFingering.top);
+    assert.ok(movedFingering.height > beforeFingering.height);
+    assert.deepEqual(await bounds('.settings-grid'), settings);
+    await page.locator('#show-fingering').uncheck();
+    assert.equal(await page.locator('#fingering-panel').isVisible(), false);
+    await page.locator('#show-fingering').check();
+    assert.equal(await page.locator('#fingering-panel').isVisible(), true);
+    assert.deepEqual(await box('#fingering-panel'), movedFingering);
+    await page.locator('#tab-instrument').click();
+    await page.selectOption('#density','auto');
+    assert.equal(await page.locator('#playing-layout').evaluate(n => n.classList.contains('custom-layout')), false);
+    await page.locator('#tab-practice').click();
+
     await page.setViewportSize({width:390,height:760});
     await page.locator('#theme-toggle').click();
     await page.evaluate(() => window.scrollTo(0,0));

@@ -18,6 +18,8 @@ module.exports = async function pitchChecks(browser, midiPage) {
     assert.equal(await current(), '60');
     assert.equal(await page.locator('.note').nth(1).getAttribute('data-midi'), '63');
     assert.equal(await page.locator('.accidental').first().textContent(), '♭');
+    assert.equal(await page.locator('#midi-offset').inputValue(), '3');
+    assert.equal(await page.locator('#close-fingering').count(), 0);
     assert.equal(await page.locator('#show-targets').isChecked(), false);
     assert.equal(await page.locator('#show-fingering').isChecked(), false);
     assert.equal(await page.locator('#fingering-panel').isVisible(), false);
@@ -28,6 +30,16 @@ module.exports = async function pitchChecks(browser, midiPage) {
     await page.locator('#show-fingering').check();
     assert.equal(await page.locator('#fingering-panel').isVisible(), true);
     assert.equal(await page.locator('#fingering-note-name').innerText(), 'Target note');
+    assert.equal(await page.locator('#fingering-mirrored').getAttribute('aria-pressed'), 'true');
+    assert.equal(await page.locator('#fingering-straight').getAttribute('aria-pressed'), 'false');
+    assert.equal(await page.locator('.ae05-svg').getAttribute('data-mirrored'), 'true');
+    const keyX = id => page.locator(`[data-ae-key="${id}"]`).evaluate(node => node.getBoundingClientRect().left);
+    assert.ok(await keyX('c1') < await keyX('ta'), 'mirrored view places left-hand palm key on screen left');
+    await page.locator('#fingering-straight').click();
+    assert.equal(await page.locator('#fingering-mirrored').getAttribute('aria-pressed'), 'false');
+    assert.equal(await page.locator('#fingering-straight').getAttribute('aria-pressed'), 'true');
+    assert.equal(await page.locator('.ae05-svg').getAttribute('data-mirrored'), 'false');
+    assert.ok(await keyX('c1') > await keyX('ta'), 'straight view places left-hand palm key on screen right');
     assert.equal(await page.locator('[data-ae-key="low-c"].is-active').count(), 1);
     await page.locator('#quick-reveal').click();
     assert.equal(await page.locator('#reveal').isChecked(), true);
@@ -66,10 +78,14 @@ module.exports = async function pitchChecks(browser, midiPage) {
 
     await page.locator('#tab-instrument').click();
     await page.locator('#calibrate').click();
-    await noteOn(48);
+    assert.equal(await page.locator('#fingering-note-name').innerText(), 'Calibrate · G4');
+    assert.equal(await page.locator('[data-ae-key="lh1"].is-active').count(), 1);
+    assert.equal(await page.locator('[data-ae-key="lh2"].is-active').count(), 1);
+    assert.equal(await page.locator('[data-ae-key="lh3"].is-active').count(), 1);
+    await noteOn(55);
     assert.equal(await page.locator('#midi-offset').inputValue(), '-12');
-    assert.match(await page.locator('#mapping-status').innerText(), /MIDI 48/);
-    await noteOff(48);
+    assert.match(await page.locator('#mapping-status').innerText(), /MIDI 55/);
+    await noteOff(55);
     await page.locator('#learn-low').click();
     await noteOn(47);
     assert.equal(await page.locator('#low').inputValue(), '59');
@@ -154,6 +170,8 @@ module.exports = async function pitchChecks(browser, midiPage) {
     assert.equal(await page.locator('#show-targets').isChecked(), true);
     assert.equal(await page.locator('#show-fingering').isChecked(), true);
     assert.equal(await page.locator('#fingering-panel').isVisible(), true);
+    assert.equal(await page.locator('#fingering-straight').getAttribute('aria-pressed'), 'true');
+    assert.equal(await page.locator('.ae05-svg').getAttribute('data-mirrored'), 'false');
 
     const helpEvent = page.waitForEvent('popup');
     await page.locator('.header-help').click();
