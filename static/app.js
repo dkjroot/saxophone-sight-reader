@@ -741,25 +741,69 @@ authored=new ScoreWorkspace(performance,sound,update,()=>layoutEditor?.active?la
 const stopReference=sound.onReferenceStop, configureReference=sound.onConfigure;
 sound.onReferenceStop=()=>{stopReference(); authored.stopPlayback(); if(workspace==='study') update();};
 sound.onConfigure=()=>{configureReference(); if(workspace==='study') update();};
+async function refreshLocalStudies({reloadActive = false, announce = false} = {}) {
+  try {
+    const response = await fetch('/api/local-studies');
+    if (!response.ok) return;
+    const data = await response.json();
+    const studies = Array.isArray(data?.studies) ? data.studies : [];
+    const select = $('study-source'), group = $('study-local-group');
+    if (!select || !group) return;
+    const previous = select.value;
+    group.replaceChildren(...studies.map(study => new Option(study.title, 'local:' + study.filename)));
+    group.hidden = studies.length === 0;
+    if (previous && [...select.options].some(option => !option.disabled && option.value === previous)) {
+      select.value = previous;
+    } else if (previous.startsWith('local:')) {
+      select.value = 'after-hours';
+    }
+    if (announce) {
+      $('study-import-status').textContent = studies.length
+        ? `Found ${studies.length} local ${studies.length === 1 ? 'study' : 'studies'} in local_studies/.`
+        : 'No files in local_studies/ yet.';
+    }
+    if (reloadActive && workspace === 'study' && select.value.startsWith('local:')) {
+      void loadStudy();
+    }
+  } catch { /* Local study folder is optional. */ }
+}
+
 async function loadStudy() {
   const revision=++workspaceRevision; authored.cancelLoad(); authored.stop(); $('study-source-status').textContent='Loading study…';
   $('study-start').disabled=true; $('study-play').disabled=true; $('study-position').disabled=true;
   try {
     const source=$('study-source').value;
+    let statusMessage = '';
     if(source==='loaded') {
       if(!activePiece) throw new Error('Load a MIDI passage in MIDI files & library, then choose Start practising this passage.');
       const score=midiStudy(activePiece.score,settings(),activePiece.bounds,activePiece.filename);
       if(revision===workspaceRevision) await authored.setScore(score);
+      statusMessage = 'Derived from the selected MIDI passage on a 1/32-note grid.';
     } else if(source==='imported') {
       if(!importedStudy) throw new Error('Choose a MusicXML file first.');
       await authored.setScore(filterStudy(importedStudy,settings()));
+      statusMessage = importedStudy.source.provenance.warnings.join(' ');
+    } else if(source.startsWith('local:')) {
+      const filename = source.slice(6);
+      const response = await fetch(`/api/local-studies/${encodeURIComponent(filename)}`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Local study could not load.');
+      if (revision !== workspaceRevision) return;
+      if (data.kind === 'midi') {
+        const score = midiStudy(data.inspection, settings(), {start: 1, end: data.inspection.notes.length}, data.filename);
+        await authored.setScore(score);
+        statusMessage = `Local MIDI study · ${data.filename} · derived on a 1/32-note grid.`;
+      } else {
+        const score = compileScore(data.score);
+        await authored.setScore(filterStudy(score, settings()));
+        const warnings = score.source.provenance?.warnings?.join(' ');
+        statusMessage = warnings || `Local study · ${data.filename}`;
+      }
     } else await authored.loadExample(source,settings());
     if(revision!==workspaceRevision) return;
     authored.sourceKey=studyKey();
     $('study-start').disabled=false; $('study-position').disabled=false;
-    $('study-source-status').textContent = source === 'loaded'
-      ? 'Derived from the selected MIDI passage on a 1/32-note grid.'
-      : source === 'imported' ? importedStudy.source.provenance.warnings.join(' ') : '';
+    $('study-source-status').textContent = statusMessage;
     if(workspace==='study') {drawStaff(); update();}
   } catch(error) {if(revision===workspaceRevision) {authored.score=null; authored.engraver=null; $('staff').replaceChildren(); $('pause-practice').disabled=true; $('study-source-status').textContent=error.message; $('feedback').textContent=error.message; update();}}
 }
@@ -781,6 +825,7 @@ async function switchWorkspace(mode) {
   $('staff').scrollTop=0; $('staff').scrollLeft=0;
   if(mode==='study') {
     progress.pause('workspace'); authored.enter();
+    void refreshLocalStudies();
     if(!authored.score || authored.sourceKey!==studyKey()) {
       await loadStudy();
     } else {drawStaff(); update();}
@@ -813,6 +858,8 @@ $('study-file').addEventListener('change',async()=>{
   } catch(error) {if(revision===importRevision) $('study-import-status').textContent=error.message;}
 });
 $('study-source').addEventListener('change',()=>{importRevision++; if($('study-import-status').textContent==='Reading MusicXML…') $('study-import-status').textContent='';syncSettingsTree(); void loadStudy();});
+$('refresh-local-studies').addEventListener('click',()=>void refreshLocalStudies({reloadActive:true, announce:true}));
+void refreshLocalStudies();
 function syncSettingsTree() {
   const filters=$('pitch-filters');
   $(workspace==='study'?'study-filter-slot':'outline-filter-slot').append(filters);

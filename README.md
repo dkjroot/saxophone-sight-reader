@@ -147,6 +147,13 @@ swing, ballad, bossa nova and funk styles. All eight use written sax pitch.
   ties. Use a file with explicit note values. Tuplets, grace notes, repeat
   traversal and DTD declarations are outside the supported subset.
 
+- **Local studies folder (`local_studies/`):** Drop private `.json`,
+  `.musicxml`/`.xml`, or `.mid`/`.midi` charts (up to 256 KB) into the
+  git-ignored `local_studies/` folder, then switch to **Passage study** and
+  click **Refresh local studies** to pick them from **Source → Local studies**.
+  See `local_studies/HOWTO.md` once created or the in-app **Help** page for the
+  JSON format.
+
 Imported music stays in memory for the session. Your settings, saved passage
 selections and any saved history belong to the browser and local address you
 use. Stick to the same browser and port to keep them handy.

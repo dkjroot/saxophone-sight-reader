@@ -202,7 +202,8 @@
           <div class="settings-bento">
             <div class="bento-card">
               <h3>Score &amp; Import</h3>
-              <label>Source <select id="study-source"><option value="loaded" disabled>Loaded MIDI passage</option><option value="imported" disabled>Imported MusicXML</option><option value="after-hours" selected>After Hours · blues study</option><option value="turnaround">Turnaround · ii–V–I study</option></select></label>
+              <label>Source <select id="study-source"><option value="loaded" disabled>Loaded MIDI passage</option><option value="imported" disabled>Imported MusicXML</option><option value="after-hours" selected>After Hours · blues study</option><option value="turnaround">Turnaround · ii–V–I study</option><optgroup id="study-local-group" label="Local studies" hidden></optgroup></select></label>
+              <button type="button" id="refresh-local-studies" class="quiet">Refresh local studies</button>
               <label>Import MusicXML <input id="study-file" type="file" accept=".musicxml,.xml"></label>
               <p id="study-import-status" class="small" role="status"></p>
               <div id="study-filter-slot"></div>

@@ -56,6 +56,40 @@ module.exports = async function studyChecks(browser, midiPage) {
     await page.locator('#study-audio-pause').click();
     assert.equal(await page.locator('#feedback').innerText(), 'Playback paused');
 
+    const demoScore = {
+      version: 1,
+      id: 'demo-local',
+      title: 'Demo local study',
+      staves: [{id: 'upper', clef: 'treble'}],
+      voices: [{id: 'melody', staff: 'upper'}],
+      tempos: [{at: [0, 1], bpm: 96}],
+      measures: [{
+        id: 'bar-1',
+        meter: [4, 4],
+        key: 'C',
+        boundary: 'final',
+        events: [
+          {id: 'e1', voice: 'melody', at: [0, 1], value: 'h', kind: 'note', notes: [{id: 'n1', letter: 'G', octave: 4, accidental: 0}]},
+          {id: 'e2', voice: 'melody', at: [2, 1], value: 'h', kind: 'rest', notes: []},
+        ],
+      }],
+    };
+    await page.route('**/api/local-studies', route => route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({studies: [{id: 'demo.json', filename: 'demo.json', kind: 'json', title: 'Demo local study'}]}),
+    }));
+    await page.route('**/api/local-studies/demo.json', route => route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({kind: 'score', filename: 'demo.json', score: demoScore}),
+    }));
+    await page.locator('#refresh-local-studies').click();
+    await page.waitForFunction(() => document.querySelector('#study-local-group option[value="local:demo.json"]') !== null);
+    await page.selectOption('#study-source', 'local:demo.json');
+    await page.waitForFunction(() => document.getElementById('practice-title').textContent === 'Demo local study');
+    assert.equal(await page.locator('.vf-stave').count(), 1);
+
     assert.deepEqual(errors, []);
   } finally {await context.close();}
 };
