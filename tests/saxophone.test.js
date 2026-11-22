@@ -9,7 +9,7 @@ import {filterStudy} from '../static/passage_filters.js';
 import {compileScore} from '../static/score_model.js';
 import {writtenKey} from '../static/score_key.js';
 import {MIDI_OFFSETS, makeSaxPhrase, soundingPitch, WindPerformance, writtenPitch} from '../static/saxophone.js';
-import {AE05_KEYS, aerophoneGoFingering, formatFingeringKeys} from '../static/fingering.js';
+import {AE05_KEYS, aerophoneGoFingering, compareAerophoneFingering, formatFingeringKeys} from '../static/fingering.js';
 
 const defaults = {sax:true, key:'C', source:'random', material:'white', low:58, high:90, span:'standard', length:12};
 const pitches = phrase => phrase.map(([note]) => note.midi);
@@ -163,4 +163,43 @@ test('Aerophone GO (AE-05) fingering chart covers B♭2–F♯6, alternates and 
   assert.equal(aerophoneGoFingering(45).supported, false);
   assert.equal(aerophoneGoFingering(91).supported, false);
   assert.equal(aerophoneGoFingering(null).supported, false);
+});
+
+test('compareAerophoneFingering computes matched, needed and extra keys for live playback', () => {
+  const idle = compareAerophoneFingering(65, null);
+  assert.equal(idle.comparing, false);
+  assert.deepEqual(idle.matched, []);
+  assert.deepEqual(idle.needed, []);
+  assert.deepEqual(idle.extra, []);
+
+  // Exact match: F4 played against F4 target
+  const exact = compareAerophoneFingering(65, 65);
+  assert.equal(exact.comparing, true);
+  assert.deepEqual(exact.matched, ['lh1', 'lh2', 'lh3', 'rh1']);
+  assert.deepEqual(exact.needed, []);
+  assert.deepEqual(exact.extra, []);
+
+  // Wrong note: F#4 (1,2,3,5) played when F4 (1,2,3,4) is targeted
+  const fSharpOnF = compareAerophoneFingering(65, 66);
+  assert.equal(fSharpOnF.comparing, true);
+  assert.deepEqual(fSharpOnF.matched, ['lh1', 'lh2', 'lh3']);
+  assert.deepEqual(fSharpOnF.needed, ['rh1']);
+  assert.deepEqual(fSharpOnF.extra, ['rh2']);
+
+  // Missing octave key: D4 played when D5 (+1) is targeted
+  const missingOctave = compareAerophoneFingering(74, 62);
+  assert.equal(missingOctave.comparing, true);
+  assert.deepEqual(missingOctave.matched, ['lh1', 'lh2', 'lh3', 'rh1', 'rh2', 'rh3']);
+  assert.deepEqual(missingOctave.needed, ['oct-up']);
+  assert.deepEqual(missingOctave.extra, []);
+
+  // Extra key on open note: C5 (2) played when C#5 (open) is targeted
+  const extraOnOpen = compareAerophoneFingering(73, 72);
+  assert.equal(extraOnOpen.comparing, true);
+  assert.deepEqual(extraOnOpen.matched, []);
+  assert.deepEqual(extraOnOpen.needed, []);
+  assert.deepEqual(extraOnOpen.extra, ['lh2']);
+
+  // Out-of-range played pitch falls back gracefully without comparing
+  assert.equal(compareAerophoneFingering(65, 40).comparing, false);
 });

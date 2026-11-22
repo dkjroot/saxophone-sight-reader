@@ -70,7 +70,7 @@
       <div class="stage-bar">
         <p id="exercise-summary" class="exercise-summary" aria-label="Active exercise settings"></p>
         <div class="stage-quick-actions" role="group" aria-label="Stage tools">
-          <label class="quick-switch"><input id="show-fingering" type="checkbox"><span>Aerophone fingering</span></label>
+          <label class="quick-switch"><input id="show-fingering" type="checkbox" checked><span>Aerophone fingering</span></label>
           <button type="button" id="quick-hear" class="quiet quick-pill" title="Hear target pitch">Hear target</button>
           <button type="button" id="quick-metronome" class="quiet quick-pill" aria-pressed="false" title="Toggle metronome">Metronome</button>
           <button type="button" id="quick-reveal" class="quiet quick-pill" aria-pressed="false" title="Show note names">Note names</button>
@@ -98,7 +98,7 @@
       <button type="button" class="quiet layout-resize" aria-label="Resize staff" title="Drag to resize staff; arrow keys resize, Shift for larger steps">↘</button>
     </section>
 
-    <aside class="card fingering-card" id="fingering-panel" aria-label="Aerophone GO fingering chart" hidden>
+    <aside class="card fingering-card" id="fingering-panel" aria-label="Aerophone GO fingering chart">
       <div class="fingering-head layout-toolbar">
         <button type="button" class="quiet layout-move" aria-label="Move Aerophone fingering" title="Drag to move Aerophone fingering; arrow keys move, Shift for larger steps">⠿</button>
         <div class="fingering-title">
@@ -117,6 +117,11 @@
         <span id="fingering-keys-text" class="fingering-keys-text">Play or select a target note</span>
       </div>
       <div id="fingering-diagram" class="fingering-diagram"></div>
+      <div class="fingering-legend" aria-label="Fingering key colours">
+        <span class="legend-chip legend-match" title="Likely held and required for the target note">Held ✓</span>
+        <span class="legend-chip legend-needed" title="Likely not held yet, required for the target note">Needed +</span>
+        <span class="legend-chip legend-extra" title="Likely held, not required for the target note">Extra ×</span>
+      </div>
       <div id="fingering-variants" class="fingering-variants" role="group" aria-label="Alternate fingerings" hidden></div>
       <button type="button" class="quiet layout-resize" aria-label="Resize Aerophone fingering" title="Drag to resize Aerophone fingering; arrow keys resize, Shift for larger steps">↘</button>
     </aside>

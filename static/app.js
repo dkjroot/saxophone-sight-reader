@@ -38,7 +38,7 @@ const numericControls = ['length','preview','low','high','midi-offset','file-off
 const saxPassageControls = ['key','material','span'];
 $('key').replaceChildren(...KEYS.map(key => new Option(key.label, key.id)));
 let target = [], completed = 0, solved = false, access, selectedInput, learning;
-let phrase = [], phraseIndex = 0, waitingForRelease = false;
+let phrase = [], phraseIndex = 0, waitingForRelease = false, heldCompletedFingering = null;
 let streamOffset = 0;
 let waitingForGenerated=false;
 const generatedStream=new GeneratedStream(()=>{
@@ -173,21 +173,26 @@ $('fingering-straight').addEventListener('click', () => {
   try { localStorage.setItem(fingeringMirrorStorageKey, 'false'); } catch { /* Session still works. */ }
 });
 function syncFingeringPanel() {
+  const playedMidi = [...performance.held].at(-1) ?? null;
+  if (heldCompletedFingering && (workspace !== 'outline' || playedMidi !== heldCompletedFingering.midi)) {
+    heldCompletedFingering = null;
+  }
   const show = $('show-fingering').checked;
   $('fingering-panel').hidden = !show;
   if (!show) return;
   if (learning === 'mapping') {
-    fingeringChart.setNote(CALIBRATE_NOTE, {showName: true, label: 'Calibrate · G4'});
+    fingeringChart.setNote(CALIBRATE_NOTE, {showName: true, label: 'Calibrate · G4', playedMidi: null});
     return;
   }
   const active = workspace === 'study' ? authored?.target ?? [] : target;
-  fingeringChart.setNote(active[0] ?? null, {showName: $('reveal').checked});
+  const displayNote = heldCompletedFingering ?? active[0] ?? null;
+  fingeringChart.setNote(displayNote, {showName: true, playedMidi});
 }
 function applyFingeringVisibility(show) {
   $('show-fingering').checked = show;
   syncFingeringPanel();
 }
-try { applyFingeringVisibility(localStorage.getItem(fingeringStorageKey) === 'true'); } catch { applyFingeringVisibility(false); }
+try { applyFingeringVisibility(localStorage.getItem(fingeringStorageKey) !== 'false'); } catch { applyFingeringVisibility(true); }
 $('show-fingering').addEventListener('change', () => {
   const show = $('show-fingering').checked;
   applyFingeringVisibility(show);
@@ -437,7 +442,7 @@ function newTarget() {
 }
 function restartPhrase() {
   passageEnded=false; $('restart-pitch').hidden=true;
-  phraseIndex = 0; solved = false; resumeRelease=false; progress.resume('resume');
+  phraseIndex = 0; solved = false; resumeRelease=false; heldCompletedFingering = null; progress.resume('resume');
   waitingForRelease = performance.held.size > 0;
   target = phrase[0] || []; flowGate.start(target,[],performance.held,performance.attacks);
   $('staff').scrollTop = 0; drawStaff(); scrollToCurrent();
@@ -542,6 +547,7 @@ function update() {
   if(flow && !solved && result.ready) {
     progress.complete();
     if(settings().endAction==='new' || phraseIndex===phrase.length-1) {completed++; $('count').textContent=completed;}
+    heldCompletedFingering = target[0] ?? null;
     advancePhrase(); return;
   }
   if (solved) {
@@ -577,6 +583,7 @@ for (const id of controls) $(id).addEventListener('change', () => {
   }
   if (id === 'midi-offset') {
     $('mapping-status').textContent = '';
+    heldCompletedFingering = null;
     performance.clear();
     sound.engine?.live.stop();
     authored?.pause();
@@ -594,7 +601,7 @@ for (const id of controls) $(id).addEventListener('change', () => {
 for (const id of ['low', 'high']) $(id).addEventListener('input', rangeLabels);
 for (const input of document.querySelectorAll('[name="end-action"]')) input.addEventListener('change', () => {persist(); syncMode(); completed=0; $('count').textContent='0'; newTarget();});
 $('reveal').addEventListener('change', () => { $('note-names').hidden = !$('reveal').checked; syncQuickBar(); syncFingeringPanel(); });
-$('reset').addEventListener('click', () => { performance.clear(); update(); });
+$('reset').addEventListener('click', () => { heldCompletedFingering = null; performance.clear(); update(); });
 for (const [button, mode, prompt] of [
   ['learn-low', 'low', 'Play your lowest note.'],
   ['learn-high', 'high', 'Play your highest note.'],
@@ -759,6 +766,7 @@ async function loadStudy() {
 function studyKey() {return $('study-source').value==='loaded'?'loaded:'+activePiece?.score.sha256+JSON.stringify([activePiece?.bounds,...['low','high','file-offset',...saxPassageControls].map(id=>$(id).value)]):($('study-source').value==='imported'?'imported:'+importedStudy?.source.provenance.sha256:$('study-source').value)+JSON.stringify(['low','high',...saxPassageControls].map(id=>$(id).value));}
 async function switchWorkspace(mode) {
   if(workspace===mode) return;
+  heldCompletedFingering = null;
   workspace=mode; sourcePlayer.stop(); sound.stopClock();
   document.documentElement.dataset.workspace=mode;
   $('mode-outline').setAttribute('aria-pressed',String(mode==='outline')); $('mode-study').setAttribute('aria-pressed',String(mode==='study'));

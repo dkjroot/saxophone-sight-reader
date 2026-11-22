@@ -128,6 +128,27 @@ export function aerophoneGoFingering(midi, variantIndex = 0) {
   };
 }
 
+export function compareAerophoneFingering(targetMidi, playedMidi, {targetVariant = 0, playedVariant = 0} = {}) {
+  const target = aerophoneGoFingering(targetMidi, targetVariant);
+  if (!target.supported || !Number.isInteger(playedMidi)) {
+    return {target, played: null, comparing: false, matched: [], needed: [], extra: []};
+  }
+  const played = aerophoneGoFingering(playedMidi, playedVariant);
+  if (!played.supported) {
+    return {target, played, comparing: false, matched: [], needed: [], extra: []};
+  }
+  const targetSet = new Set(target.keys);
+  const playedSet = new Set(played.keys);
+  return {
+    target,
+    played,
+    comparing: true,
+    matched: target.keys.filter(key => playedSet.has(key)),
+    needed: target.keys.filter(key => !playedSet.has(key)),
+    extra: played.keys.filter(key => !targetSet.has(key)),
+  };
+}
+
 export function formatFingeringKeys(keys) {
   if (!keys.length) return 'Open (all keys released)';
   return keys.map(id => AE05_KEYS[id]?.label ?? id).join(' · ');
@@ -189,11 +210,12 @@ export class AerophoneFingeringChart {
     this.keysLabel = keysLabel;
     this.variantBar = variantBar;
     this.keyNodes = new Map();
-    this.activeKeys = new Set();
+    this.keyStates = new Map();
     this.variantByNote = new Map();
     this.currentNote = null;
-    this.showName = false;
+    this.showName = true;
     this.labelOverride = null;
+    this.playedMidi = null;
     this.mirrored = false;
     this.svg = null;
     this.scene = null;
@@ -299,48 +321,84 @@ export class AerophoneFingeringChart {
     }
   }
 
-  setNote(note, {showName = false, label = null} = {}) {
+  setNote(note, {showName = true, label = null, playedMidi = null} = {}) {
     this.currentNote = note || null;
     this.showName = Boolean(showName);
     this.labelOverride = label || null;
+    this.playedMidi = Number.isInteger(playedMidi) ? playedMidi : null;
     const midi = note?.midi ?? null;
     const variantIndex = midi === null ? 0 : (this.variantByNote.get(midi) ?? 0);
-    const renderKey = `${midi ?? 'none'}:${variantIndex}:${this.showName ? '1' : '0'}:${this.labelOverride ?? ''}`;
+    const playedVariant = this.playedMidi === null ? 0 : (this.playedMidi === midi ? variantIndex : (this.variantByNote.get(this.playedMidi) ?? 0));
+    const renderKey = `${midi ?? 'none'}:${variantIndex}:${this.playedMidi ?? 'idle'}:${playedVariant}:${this.showName ? '1' : '0'}:${this.labelOverride ?? ''}`;
     if (renderKey === this.lastRenderedKey) return;
     this.lastRenderedKey = renderKey;
 
     if (midi === null) {
-      this.applyKeys([]);
+      this.applyKeyStates(new Map());
+      if (this.svg) this.svg.dataset.comparing = 'false';
       if (this.noteLabel) this.noteLabel.textContent = '—';
       if (this.keysLabel) this.keysLabel.textContent = 'Play or select a target note';
       this.renderVariants(null);
       return;
     }
 
-    const info = aerophoneGoFingering(midi, variantIndex);
+    const comparison = compareAerophoneFingering(midi, this.playedMidi, {targetVariant: variantIndex, playedVariant});
+    const info = comparison.target;
     if (!info.supported) {
-      this.applyKeys([]);
-      if (this.noteLabel) this.noteLabel.textContent = this.labelOverride ?? (this.showName ? noteName(note) : 'Out of AE-05 range');
+      this.applyKeyStates(new Map());
+      if (this.svg) this.svg.dataset.comparing = 'false';
+      if (this.noteLabel) this.noteLabel.textContent = this.labelOverride ?? noteName(note);
       if (this.keysLabel) this.keysLabel.textContent = 'Supported chart: B♭2–F♯6';
       this.renderVariants(null);
       return;
     }
 
-    this.applyKeys(info.keys);
-    if (this.noteLabel) this.noteLabel.textContent = this.labelOverride ?? (this.showName ? noteName(note) : 'Target note');
-    if (this.keysLabel) this.keysLabel.textContent = formatFingeringKeys(info.keys);
+    const nextStates = new Map();
+    if (comparison.comparing) {
+      for (const id of comparison.matched) nextStates.set(id, 'match');
+      for (const id of comparison.needed) nextStates.set(id, 'needed');
+      for (const id of comparison.extra) nextStates.set(id, 'extra');
+      if (this.svg) this.svg.dataset.comparing = 'true';
+      if (this.keysLabel) {
+        if (!comparison.needed.length && !comparison.extra.length) {
+          this.keysLabel.textContent = '✓ Matches target fingering';
+        } else {
+          this.keysLabel.textContent = [
+            comparison.needed.length ? `+ ${formatFingeringKeys(comparison.needed)}` : '',
+            comparison.extra.length ? `× ${formatFingeringKeys(comparison.extra)}` : '',
+          ].filter(Boolean).join(' · ');
+        }
+      }
+    } else {
+      for (const id of info.keys) nextStates.set(id, 'active');
+      if (this.svg) this.svg.dataset.comparing = 'false';
+      if (this.keysLabel) this.keysLabel.textContent = formatFingeringKeys(info.keys);
+    }
+    this.applyKeyStates(nextStates);
+    if (this.noteLabel) this.noteLabel.textContent = this.labelOverride ?? noteName(note);
     this.renderVariants(info);
   }
 
-  applyKeys(keys) {
-    const next = new Set(keys);
-    for (const id of this.activeKeys) {
-      if (!next.has(id)) this.keyNodes.get(id)?.classList.remove('is-active');
+  applyKeyStates(nextStates) {
+    const classFor = state => {
+      if (state === 'active') return ['is-active'];
+      if (state === 'match') return ['is-active', 'is-match'];
+      if (state === 'needed') return ['is-active', 'is-needed'];
+      if (state === 'extra') return ['is-extra'];
+      return [];
+    };
+    const affected = new Set([...this.keyStates.keys(), ...nextStates.keys()]);
+    for (const id of affected) {
+      const prev = this.keyStates.get(id) ?? null;
+      const next = nextStates.get(id) ?? null;
+      if (prev === next) continue;
+      const node = this.keyNodes.get(id);
+      if (!node) continue;
+      node.classList.remove('is-active', 'is-match', 'is-needed', 'is-extra');
+      const classes = classFor(next);
+      if (classes.length) node.classList.add(...classes);
     }
-    for (const id of next) {
-      if (!this.activeKeys.has(id)) this.keyNodes.get(id)?.classList.add('is-active');
-    }
-    this.activeKeys = next;
+    this.keyStates = nextStates;
   }
 
   renderVariants(info) {
@@ -361,7 +419,7 @@ export class AerophoneFingeringChart {
       button.addEventListener('click', () => {
         this.variantByNote.set(info.midi, index);
         this.lastRenderedKey = '';
-        this.setNote(this.currentNote, {showName: this.showName, label: this.labelOverride});
+        this.setNote(this.currentNote, {showName: this.showName, label: this.labelOverride, playedMidi: this.playedMidi});
       });
       return button;
     }));

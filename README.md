@@ -89,13 +89,17 @@ unavailable, try USB.
    and the arrow tells you whether to play higher or lower. **Show note names**
    (or the **Note names** pill on the stage) gives you the written names.
    **Mark target** puts a diamond on the matching pitch button.
-3. Toggle **Aerophone fingering** on the stage if you want a live Roland
-   Aerophone GO (AE‑05) fingering diagram beside the staff. It stays off by
-   default, remembers your choice locally, lets you switch between **Mirrored**
-   (default player view) and **Straight** (front view), can be moved and resized
-   using its **⠿** and **↘** handles, supports standard alternate fingerings
-   (like Bis B♭, Side C, and Front F), and keeps the note name hidden until
-   **Show note names** is turned on.
+3. The **Aerophone fingering** panel starts on by default beside the staff and
+   remembers your toggle choice locally. It always shows the written note name
+   (so you can also work straight from the fingering chart), lets you switch
+   between **Mirrored** (default player view) and **Straight** (front view),
+   can be moved and resized with its **⠿** and **↘** handles, and supports
+   standard alternate fingerings (like Bis B♭, Side C, and Front F). While a
+   note is held, it compares the likely standard fingering of the played pitch
+   against the target: bright green for likely held and right, dark green
+   (dashed) for keys still needed, and orange for likely extra keys. When you
+   hit the right note, it holds that green fingering on screen until you stop
+   blowing or slur into a new note.
 4. Leave **Advancement** on **Fluid** to slur between different pitches.
    Articulate repeated notes afresh. **Release each note** waits for the
    release before advancing. **Repeat passage** loops the same line,

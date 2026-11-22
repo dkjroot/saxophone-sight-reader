@@ -21,15 +21,19 @@ module.exports = async function pitchChecks(browser, midiPage) {
     assert.equal(await page.locator('#midi-offset').inputValue(), '3');
     assert.equal(await page.locator('#close-fingering').count(), 0);
     assert.equal(await page.locator('#show-targets').isChecked(), false);
-    assert.equal(await page.locator('#show-fingering').isChecked(), false);
-    assert.equal(await page.locator('#fingering-panel').isVisible(), false);
+    assert.equal(await page.locator('#show-fingering').isChecked(), true);
+    assert.equal(await page.locator('#fingering-panel').isVisible(), true);
+    assert.equal(await page.locator('#reveal').isChecked(), false);
+    assert.equal(await page.locator('#fingering-note-name').innerText(), 'C4');
     await page.locator('#show-targets').check();
     const marker = await pad(60).evaluate(node => getComputedStyle(node,'::after').content);
     assert.match(marker, /◆/);
 
+    await page.locator('#show-fingering').uncheck();
+    assert.equal(await page.locator('#fingering-panel').isVisible(), false);
     await page.locator('#show-fingering').check();
     assert.equal(await page.locator('#fingering-panel').isVisible(), true);
-    assert.equal(await page.locator('#fingering-note-name').innerText(), 'Target note');
+    assert.equal(await page.locator('#fingering-note-name').innerText(), 'C4');
     assert.equal(await page.locator('#fingering-mirrored').getAttribute('aria-pressed'), 'true');
     assert.equal(await page.locator('#fingering-straight').getAttribute('aria-pressed'), 'false');
     assert.equal(await page.locator('.ae05-svg').getAttribute('data-mirrored'), 'true');
@@ -46,6 +50,7 @@ module.exports = async function pitchChecks(browser, midiPage) {
     assert.equal(await page.locator('#fingering-note-name').innerText(), 'C4');
     await page.locator('#quick-reveal').click();
     assert.equal(await page.locator('#reveal').isChecked(), false);
+    assert.equal(await page.locator('#fingering-note-name').innerText(), 'C4');
 
     const staffY = await page.locator('#keyboard-panel').evaluate(node => node.getBoundingClientRect().top + window.scrollY);
     await page.locator('#tab-instrument').click();
@@ -55,6 +60,11 @@ module.exports = async function pitchChecks(browser, midiPage) {
     assert.match(await page.locator('#feedback').innerText(), /higher/);
     assert.equal(await page.locator('.note-direction').first().textContent(), '↑');
     assert.equal(await page.locator('#played-mark').textContent(), '×');
+    assert.equal(await page.locator('.ae05-svg').getAttribute('data-comparing'), 'true');
+    assert.equal(await page.locator('.ae-key.is-match').count(), 7);
+    assert.equal(await page.locator('.ae-key.is-needed').count(), 0);
+    assert.equal(await page.locator('[data-ae-key="low-b"].is-extra').count(), 1);
+    assert.match(await page.locator('#fingering-keys-text').innerText(), /× B/);
     await send([0xb0,2,126]);
     assert.equal(await position(), '1 / 8');
     await noteOn(51);
@@ -62,13 +72,31 @@ module.exports = async function pitchChecks(browser, midiPage) {
     assert.equal(await position(), '2 / 8');
     assert.equal(await pad(60).getAttribute('aria-pressed'), 'true');
     assert.equal(await page.locator('#played-mark').textContent(), '✓');
-    assert.equal(await page.locator('[data-ae-key="low-eb"].is-active').count(), 1);
+    assert.equal(await page.locator('#fingering-note-name').innerText(), 'C4');
+    assert.equal(await page.locator('.ae05-svg').getAttribute('data-comparing'), 'true');
+    assert.equal(await page.locator('.ae-key.is-match').count(), 7);
+    assert.equal(await page.locator('.ae-key.is-needed').count(), 0);
+    assert.equal(await page.locator('.ae-key.is-extra').count(), 0);
+    assert.equal(await page.locator('#fingering-keys-text').innerText(), '✓ Matches target fingering');
     await noteOn(54);
     await noteOff(51);
     assert.equal(await position(), '3 / 8', 'note-on before previous release advances through a slur');
     assert.equal(await page.locator('#keyboard [aria-pressed=true]').count(), 1);
+    assert.equal(await page.locator('#fingering-note-name').innerText(), 'E♭4');
+    assert.equal(await page.locator('.ae-key.is-match').count(), 7);
+    assert.equal(await page.locator('.ae-key.is-extra').count(), 0);
     assert.equal(await page.locator('#keyboard-panel').evaluate(node => node.getBoundingClientRect().top + window.scrollY), staffY);
     await noteOff(54);
+    assert.equal(await page.locator('.ae05-svg').getAttribute('data-comparing'), 'false');
+    assert.equal(await page.locator('#fingering-note-name').innerText(), 'F4');
+    assert.equal(await page.locator('.ae-key.is-match, .ae-key.is-needed, .ae-key.is-extra').count(), 0);
+    await noteOn(57);
+    assert.equal(await page.locator('.ae-key.is-match').count(), 3);
+    assert.equal(await page.locator('[data-ae-key="rh1"].is-active.is-needed').count(), 1);
+    assert.equal(await page.locator('[data-ae-key="rh2"].is-extra').count(), 1);
+    assert.equal(await page.locator('#fingering-keys-text').innerText(), '+ 4 · × 5');
+    await noteOff(57);
+    assert.equal(await page.locator('.ae05-svg').getAttribute('data-comparing'), 'false');
 
     await page.locator('#tab-practice').click();
     await page.selectOption('#preview','7');

@@ -88,6 +88,7 @@ module.exports = async function workspaceChecks(browser, midiPage) {
 
     await page.locator('#tab-practice').click();
     await set({low:58,high:90,source:'blues'});
+    await page.locator('#show-fingering').uncheck();
     await page.evaluate(() => window.scrollTo(0,0));
     await page.waitForTimeout(220);
     await page.screenshot({path:'test-results/saxophone-dark-clean.png'});
@@ -95,6 +96,10 @@ module.exports = async function workspaceChecks(browser, midiPage) {
     await page.evaluate(() => window.scrollTo(0,0));
     await page.waitForTimeout(220);
     await page.screenshot({path:'test-results/saxophone-dark.png'});
+    await send([0x90,66,100]);
+    await page.waitForTimeout(80);
+    await page.screenshot({path:'test-results/saxophone-fingering-compare.png'});
+    await send([0x80,66,0]);
 
     // Verify Aerophone fingering panel can be moved and resized like staff/pitch monitor.
     const box = selector => page.locator(selector).evaluate(node => {
